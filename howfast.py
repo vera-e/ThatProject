@@ -2,10 +2,10 @@ import time
 import pygame
 import random
 pygame.init()
-GameDisplay = pygame.display.set_mode((1080, 720))
+GameDisplay = pygame.display.set_mode((1280, 920))
 pygame.display.set_caption('F*CKING TYPE')  # title ba
 clock = pygame.time.Clock()  # ========
-center = (540, 360)
+center = (640, 420)
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -93,7 +93,7 @@ def prepare():
                     random_a_to_z_mode(
                         set_AtoZ, keycap, index_random, time_start)
         GameDisplay.fill(green)
-        message_dis("Press Space Bar To Start", 70, center, red)
+        message_dis("Press Space Bar To Start", 40,center, red)
         pygame.display.update()
         clock.tick(30)
 
@@ -120,11 +120,10 @@ def random_a_to_z_mode(set_AtoZ, keycap, index_random, time_start):
                                 if event.key == pygame.K_SPACE:
                                     prepare()
                             GameDisplay.fill(black)
-                            botton(str(total_time), 270, 180, 540,
-                                   360, 70, red, (255, 0, 50))
+                            botton(str(total_time), 270, 280, 540,
+                                   360, 50, red, (255, 0, 50))
                             pygame.display.update()
                 if event.key == keycap[index_random]:
-                    print(set_AtoZ)
                     set_AtoZ.pop(index_random)
                     keycap.pop(index_random)
                     new_index = random_a_to_z(keycap)
@@ -132,8 +131,8 @@ def random_a_to_z_mode(set_AtoZ, keycap, index_random, time_start):
                 else:
                     continue
         GameDisplay.fill(red)
-        message_dis(text, 500, center, white)
-        message_dis("PRESS SPACE BAR TO RESTART", 50, (540, 650), black)
+        message_dis(text, 300, center, white)
+        message_dis("PRESS SPACE BAR TO RESTART", 30, (640, 800), black)
         pygame.display.update()
         clock.tick(60)
 
@@ -172,13 +171,13 @@ def how_fast_a_to_z_mode():
                         if event.key == pygame.K_SPACE:
                             how_fast_a_to_z_mode()
                     GameDisplay.fill(white)
-                    botton(str(total_time), 270, 180, 540,
+                    botton(str(total_time), 470, 280, 540,
                            360, 70, red, (255, 0, 50))
                     pygame.display.update()
         text = set_AtoZ[i]
         GameDisplay.fill(red)
-        message_dis(text, 500, center, white)
-        message_dis("PRESS SPACE BAR TO RESTART", 50, (540, 650), black)
+        message_dis(text, 300, center, white)
+        message_dis("PRESS SPACE BAR TO RESTART", 30, (640, 800), black)
         pygame.display.update()
         clock.tick(60)
 #=========Mini Game================================
@@ -194,7 +193,7 @@ def mini_game(list_word):
     word = ""
     word_check = ""
     show_input = ""
-    x = 540
+    x = 640
     y = 40
     set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                 "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
@@ -202,14 +201,14 @@ def mini_game(list_word):
               pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13, ]
     while True:
         GameDisplay.fill(black)
-        botton("          ", 125, 450, 830, 130, 30, red, red)
-        botton("1st", 840, 50, 200, 70, 10, (0,255,0),(0,255,0))
-        botton("2nd", 840, 100, 200, 50, 10,  green,green)
-        botton("3rd", 840, 150, 200, 50, 10, (200,0,250), (200,0,250))
-        botton("4th", 840, 200, 200, 50, 10, purple, purple)
-        botton("5th", 840, 250, 200, 50, 10, red, red)
-        message_dis("SCORE :" + str(score), 15, (85, 25), white)
-        message_dis("LIFE :" + str(life), 30, (540, 650), white)
+        botton("          ", 125, 600, 980, 130, 30, red, red)
+        botton("1st", 1040, 50, 200, 70, 10, (0,255,0),(0,255,0))
+        botton("2nd", 1040, 100, 200, 50, 10,  green,green)
+        botton("3rd", 1040, 150, 200, 50, 10, (200,0,250), (200,0,250))
+        botton("4th", 1040, 200, 200, 50, 10, purple, purple)
+        botton("5th", 1040, 250, 200, 50, 10, red, red)
+        message_dis("SCORE " + str(score), 20, (85, 25), white)
+        message_dis("LIFE " + str(life), 30, (640, 850), white)
         message_dis(list_word[i], 100, (x, y), white)
         pygame.display.update()
         for event in pygame.event.get():
@@ -231,15 +230,18 @@ def mini_game(list_word):
                     continue
                 if event.key == pygame.K_SPACE or event.key == 13:
                     message_dis(list_word[i], 100, (x, y), white)
-                    if word == word_check and abs(500 - y) < 100:
-                        if abs(520 - y) < 30:
-                            message_dis("PERFECT x 2", 50, (540, 200), purple)
+                    if word == word_check and abs(680 - y) < 100:
+                        if abs(680 - y) < 25:
+                            color = purple
+                            message_dis("PERFECT x 2", 50, (640, 300), purple)
                             bonus = 2
-                        elif abs(500 - y) < 60:
-                            message_dis("GREAT x 1.5", 50, (540, 200), blue)
+                        elif abs(680 - y) < 60:
+                            color = blue
+                            message_dis("GREAT x 1.5", 50, (640, 300), blue)
                             bonus = 1.5
                         else:
-                            message_dis("GOOD x 1.5", 50, (540, 200), green)
+                            color = green
+                            message_dis("GOOD x 1.5", 50, (640, 300), green)
                             bonus = 1
                         score += int(len(word.split(".")) * 1500 * bonus)
                         if word_check != "":
@@ -247,11 +249,11 @@ def mini_game(list_word):
                             for z in output:
                                 z = int(z) - 97
                                 show_input += set_AtoZ[z]
-                            message_dis(show_input, 50, (540, 600), green)
-                            message_dis("SCORE :" + str(score),
+                            message_dis(show_input, 100, (640, 665), color)
+                            message_dis("SCORE " + str(score),
                                         15, (85, 25), white)
-                            message_dis("LIFE :" + str(life),
-                                        20, (540, 650), white)
+                            message_dis("LIFE " + str(life),
+                                        20, (640, 750), white)
                             perfect.play()
                             time.sleep(0.3)
                             show_input = ""
@@ -266,7 +268,7 @@ def mini_game(list_word):
                         speed = 2
                         message_dis(list_word[i], 100, (x, y), white)
                         if word_check != "":
-                            if abs(500 - y) < 200:
+                            if abs(700 - y) < 200:
                                 bonus = 1
                             else:
                                 bonus = 0.5
@@ -275,13 +277,13 @@ def mini_game(list_word):
                             for z in output:
                                 z = int(z) - 97
                                 show_input += set_AtoZ[z]
-                            botton("          ", 240, 450, 600, 100, 30, red, red)
-                            message_dis("BAD", 50, (540, 200), white)
-                            message_dis("SCORE :" + str(score),
+                            botton("          ", 340, 550, 600, 100, 30, red, red)
+                            message_dis("BAD", 50, (640, 300), white)
+                            message_dis("SCORE " + str(score),
                                         15, (85, 25), white)
-                            message_dis(show_input, 50, (540, 600), red)
-                            message_dis("LIFE :" + str(life),
-                                        30, (540, 650), red)
+                            message_dis(show_input, 100, (640, 665), red)
+                            message_dis("LIFE " + str(life),
+                                        30, (640, 750), red)
                             show_input = ""
                             bad.play()
                             time.sleep(0.3)
@@ -299,9 +301,9 @@ def mini_game(list_word):
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-        if y > 600:
+        if y > 800:
             life -= 1
-            x = 540
+            x = 640
             y = 40
             i += 1
             continue
@@ -313,12 +315,12 @@ def mini_game(list_word):
                         quit()
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_SPACE:
-                            how_fast_a_to_z_mode()
-                    GameDisplay.fill(black)
-                    message_dis("GAME OVER", 200, (540, 360), red)
-                    pygame.display.update()
+                            mini_game()
+                GameDisplay.fill(black)
+                message_dis("GAME OVER", 100, (640, 460), red)
+                pygame.display.update()
         
-        message_dis(show_input, 50, (540, 600), yellow)
+        message_dis(show_input, 100, (640, 665), yellow)
         show_input = ""
         y += speed
         clock.tick(60)
@@ -333,13 +335,13 @@ def game_intro():
                 pygame.quit()
                 quit()
         GameDisplay.fill(black)
-        botton("HOW FAST YOU CAN TYPE", 650, 300, 400,
+        botton("HOW FAST YOU CAN TYPE", 850, 400, 400,
                70, 15, green, (0, 255, 0), "start")
-        botton("RANDOM TYPE", 650, 370, 400, 70,
+        botton("RANDOM TYPE", 850, 470, 400, 70,
                30, green, (0, 255, 0), "rand_mode")
-        botton("Mini Game", 650, 440, 400, 70, 20,
+        botton("Mini Game", 850, 540, 400, 70, 20,
                green, (0, 255, 0), "mini_game")
-        botton("QUIT", 750, 510, 200, 70, 20, red, (255, 0, 0), "quit")
+        botton("QUIT", 950, 610, 200, 70, 20, red, (255, 0, 0), "quit")
 
         pygame.display.update()
         clock.tick(30)
