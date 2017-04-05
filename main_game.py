@@ -1,10 +1,8 @@
-import time, pygame, random, sys
-
-pygame.init()
+import time, pygame, random
 GameDisplay = pygame.display.set_mode((1280, 920))
-pygame.display.set_caption('F*CKING TYPE')  # title ba
-clock = pygame.time.Clock()  # ========
+clock = pygame.time.Clock()
 center = (640, 420)
+pause = True
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -14,9 +12,7 @@ blue = (0, 0, 200)
 yellow = (200, 200, 0)
 purple = (150, 0, 200)
 
-#===========================
-
-
+#============helper function==========================
 # i = color out of range  / a = color in range
 def botton(msg, x, y, w, h, fontsize, i, a, order=None):
     click = pygame.mouse.get_pressed()
@@ -24,18 +20,22 @@ def botton(msg, x, y, w, h, fontsize, i, a, order=None):
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
         pygame.draw.rect(GameDisplay, a, (x, y, w, h))
         if click[0] == 1 and order is not None:
+
             if order == "start":
                 how_fast_a_to_z_mode()
-            elif order == "quit":
+            if order == "quit":
                 pygame.quit()
                 quit()
-            elif order == "mini_game":
+            if order == "mini_game":
                 list_word = ["CAT", "ZZZ",
                              "JAZZ", "THUNDER"]
-                mini_game(list_word)
-            elif order == "rand_mode":
+                mini_game_mode(list_word)
+            if order == "rand_mode":
                 prepare()
-
+            if order == "main_menu":
+                game_intro()
+            if order == "unpause":
+                unpaused()
     else:
         pygame.draw.rect(GameDisplay, i, (x, y, w, h))
     sizetext = pygame.font.Font(
@@ -62,36 +62,64 @@ def message_dis(text, size, position, color=None):
     textrec.center = position
     GameDisplay.blit(textsurface, textrec)
     # pygame.display.update()
-
-
-#=========Random AtoZ=====================================================
 def random_a_to_z(keycap):
     last = len(keycap) - 1
     index_random = random.randrange(0, last)
     return index_random
 
 
-def prepare():
-    set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
-                "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ""]
-    keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
-              pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, ""]
-    while True:
+def prepare(action=None):
+        set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+                    "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", ""]
+        keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
+                  pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, ""]
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if not action:
+                        if event.key == pygame.K_SPACE:
+                            time_start = time.time()
+                            index_random = random_a_to_z(keycap)
+                            random_a_to_z_mode(
+                                set_AtoZ, keycap, index_random, time_start)
+                    else:
+                        if event.key == pygame.K_SPACE:
+                            i = 3
+                            while i >0:
+                                GameDisplay.fill(green)
+                                message_dis(str(i), 300, center, black)
+                                pygame.display.update()
+                                time.sleep(1)
+                                i -= 1
+                            return
+            GameDisplay.fill(green)
+            message_dis("Press Space Bar To Start", 40,center, red)
+            pygame.display.update()
+            clock.tick(30)
+def unpaused():
+    global pause
+    pause = False
+    return
+def paused():
+    while pause:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    time_start = time.time()
-                    index_random = random_a_to_z(keycap)
-                    random_a_to_z_mode(
-                        set_AtoZ, keycap, index_random, time_start)
-        GameDisplay.fill(green)
-        message_dis("Press Space Bar To Start", 40,center, red)
+        GameDisplay.fill(black)
+        message_dis("PAUSE", 50, (640,200), white)
+        botton("RESUME", 440, 300, 400,100, 25, green, (0, 255, 0), "unpause")
+        botton("MIAN MENU", 440, 400, 400,100, 25, green, (0, 255, 0), "main_menu")
+        botton("QUIT", 540, 500, 200,100, 25, red, (255, 0, 0), "quit")
         pygame.display.update()
-        clock.tick(30)
+    return
 
+
+
+#=========Random AtoZ=====================================================
 
 def random_a_to_z_mode(set_AtoZ, keycap, index_random, time_start):
     while True:  # main game loop
@@ -101,6 +129,8 @@ def random_a_to_z_mode(set_AtoZ, keycap, index_random, time_start):
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused()
                 if event.key == pygame.K_SPACE:
                     prepare()
                 if len(set_AtoZ) == 2:
@@ -148,6 +178,8 @@ def how_fast_a_to_z_mode():
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    paused()
                 if event.key == pygame.K_SPACE:
                     how_fast_a_to_z_mode()
                 if event.key == keycap[i]:
@@ -180,7 +212,9 @@ def how_fast_a_to_z_mode():
 
 #=========Mini Game================================
 
-def mini_game(list_word):
+def mini_game_mode(list_word):
+    prepare(True)
+    global pause
     perfect = pygame.mixer.Sound('ding.wav')
     bad = pygame.mixer.Sound('wrong.wav')  # too long, make it short than this
     time_count = 120 #time in seconds
@@ -197,7 +231,7 @@ def mini_game(list_word):
     set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                 "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
-              pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13, pygame.K_SPACE , pygame.K_BACKSPACE]
+              pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
     while True:
         GameDisplay.fill(black)
         botton("          ", 125, 600, 980, 130, 30, red, red)
@@ -224,6 +258,10 @@ def mini_game(list_word):
                 time_count -= 1
         
             if event.type == pygame.KEYDOWN and event.key in keycap:
+                if event.key == pygame.K_ESCAPE:
+                    pause = True
+                    paused()
+                    continue
                 if event.key == pygame.K_BACKSPACE:
                     word_check = word_check.split(".")
                     del word_check[-1]
@@ -243,6 +281,9 @@ def mini_game(list_word):
                             color = green
                             message_dis("GOOD x 1.5", 50, (640, 300), green)
                             bonus = 1
+                        message_dis(list_word[i], 100, (x, y), color)
+                        pygame.display.update()
+                        time.sleep(0.2)
                         score += int(len(word.split(".")) * 1500 * bonus)
                         if word_check != "":
                             output = word_check.split(".")
@@ -272,7 +313,9 @@ def mini_game(list_word):
                             message_dis("BAD", 50, (640, 300), white)
                             show_input = ""
                             bad.play()
-                            time.sleep(0.3)
+                        message_dis(list_word[i], 100, (x, y), red)
+                        pygame.display.update()
+                        time.sleep(0.2)
                         word = ""
                         word_check = ""
                         y = 0
@@ -283,7 +326,7 @@ def mini_game(list_word):
                     else:
                         word_check += "." + str(event.key)
 
-        if len(word_check) > 0:
+        if word_check != "":
             output = word_check.split(".")
             for z in output:
                 z = int(z) - 97
@@ -305,7 +348,7 @@ def mini_game(list_word):
                         if event.key == pygame.K_SPACE:
                             mini_game()
                 GameDisplay.fill(black)
-                message_dis("GAME OVER", 100, (640, 460), red)
+                message_dis("TIME OUT", 100, (640, 460), red)
                 pygame.display.update()
         
         message_dis(show_input, 100, (640, 665), yellow)
@@ -316,22 +359,22 @@ def mini_game(list_word):
 
 #================================================
 
-
 def game_intro():
+    pygame.init()
+    pygame.display.set_caption('F*CKING TYPE')  # title ba
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
         GameDisplay.fill(black)
-        botton("HOW FAST YOU CAN TYPE", 850, 400, 400,
-               70, 15, green, (0, 255, 0), "start")
-        botton("RANDOM TYPE", 850, 470, 400, 70,
-               30, green, (0, 255, 0), "rand_mode")
-        botton("Mini Game", 850, 540, 400, 70, 20,
+        # botton("HOW FAST YOU CAN TYPE", 850, 400, 400,
+        #        70, 15, green, (0, 255, 0), "start")
+        # botton("RANDOM TYPE", 850, 470, 400, 70,
+        #        30, green, (0, 255, 0), "rand_mode")
+        botton("MAIN GAME", 850, 400, 400, 70, 20,
                green, (0, 255, 0), "mini_game")
         botton("QUIT", 950, 610, 200, 70, 20, red, (255, 0, 0), "quit")
-
         pygame.display.update()
         clock.tick(30)
 game_intro()
