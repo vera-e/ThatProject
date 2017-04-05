@@ -1,6 +1,5 @@
-import time
-import pygame
-import random
+import time, pygame, random, sys
+
 pygame.init()
 GameDisplay = pygame.display.set_mode((1280, 920))
 pygame.display.set_caption('F*CKING TYPE')  # title ba
@@ -14,11 +13,7 @@ red = (200, 0, 0)
 blue = (0, 0, 200)
 yellow = (200, 200, 0)
 purple = (150, 0, 200)
-#==========high score=============
 
-
-def high_score():
-    pass
 #===========================
 
 
@@ -66,7 +61,7 @@ def message_dis(text, size, position, color=None):
     textsurface, textrec = text_objects(text, sizetext, color)
     textrec.center = position
     GameDisplay.blit(textsurface, textrec)
-    pygame.display.update()
+    # pygame.display.update()
 
 
 #=========Random AtoZ=====================================================
@@ -179,13 +174,17 @@ def how_fast_a_to_z_mode():
         message_dis(text, 300, center, white)
         message_dis("PRESS SPACE BAR TO RESTART", 30, (640, 800), black)
         pygame.display.update()
-        clock.tick(60)
-#=========Mini Game================================
+        clock.tick(90)
+#===============================================
 
+
+#=========Mini Game================================
 
 def mini_game(list_word):
     perfect = pygame.mixer.Sound('ding.wav')
     bad = pygame.mixer.Sound('wrong.wav')  # too long, make it short than this
+    time_count = 120 #time in seconds
+    pygame.time.set_timer(pygame.USEREVENT+1, 1000)
     i = 0
     life = 3
     speed = 2
@@ -198,7 +197,7 @@ def mini_game(list_word):
     set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                 "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
-              pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13, ]
+              pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13, pygame.K_SPACE , pygame.K_BACKSPACE]
     while True:
         GameDisplay.fill(black)
         botton("          ", 125, 600, 980, 130, 30, red, red)
@@ -207,29 +206,30 @@ def mini_game(list_word):
         botton("3rd", 1040, 150, 200, 50, 10, (200,0,250), (200,0,250))
         botton("4th", 1040, 200, 200, 50, 10, purple, purple)
         botton("5th", 1040, 250, 200, 50, 10, red, red)
-        message_dis("SCORE " + str(score), 20, (85, 25), white)
-        message_dis("LIFE " + str(life), 30, (640, 850), white)
+        message_dis(str(score), 20, (105, 55), white)
+        message_dis(str(time_count), 30, (640, 850), white)
         message_dis(list_word[i], 100, (x, y), white)
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if word == "":
+        if word == "":
                 for j in range(len(list_word[i])):
                     index = set_AtoZ.index(list_word[i][j])
                     if j == 0:
                         word += str(keycap[index])
                     else:
                         word += "." + str(keycap[index])
-            if event.type == pygame.KEYDOWN:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.USEREVENT+1:
+                time_count -= 1
+        
+            if event.type == pygame.KEYDOWN and event.key in keycap:
                 if event.key == pygame.K_BACKSPACE:
                     word_check = word_check.split(".")
                     del word_check[-1]
                     word_check = ".".join(word_check)
                     continue
-                if event.key == pygame.K_SPACE or event.key == 13:
-                    message_dis(list_word[i], 100, (x, y), white)
+                elif event.key == pygame.K_SPACE or event.key == 13:
                     if word == word_check and abs(680 - y) < 100:
                         if abs(680 - y) < 25:
                             color = purple
@@ -249,13 +249,7 @@ def mini_game(list_word):
                             for z in output:
                                 z = int(z) - 97
                                 show_input += set_AtoZ[z]
-                            message_dis(show_input, 100, (640, 665), color)
-                            message_dis("SCORE " + str(score),
-                                        15, (85, 25), white)
-                            message_dis("LIFE " + str(life),
-                                        20, (640, 750), white)
                             perfect.play()
-                            time.sleep(0.3)
                             show_input = ""
                         word = ""
                         word_check = ""
@@ -264,9 +258,7 @@ def mini_game(list_word):
                         if i % 3 == 0:
                             speed += 1
                     else:
-                        life -= 1
                         speed = 2
-                        message_dis(list_word[i], 100, (x, y), white)
                         if word_check != "":
                             if abs(700 - y) < 200:
                                 bonus = 1
@@ -277,13 +269,7 @@ def mini_game(list_word):
                             for z in output:
                                 z = int(z) - 97
                                 show_input += set_AtoZ[z]
-                            botton("          ", 340, 550, 600, 100, 30, red, red)
                             message_dis("BAD", 50, (640, 300), white)
-                            message_dis("SCORE " + str(score),
-                                        15, (85, 25), white)
-                            message_dis(show_input, 100, (640, 665), red)
-                            message_dis("LIFE " + str(life),
-                                        30, (640, 750), red)
                             show_input = ""
                             bad.play()
                             time.sleep(0.3)
@@ -296,18 +282,20 @@ def mini_game(list_word):
                         word_check += str(event.key)
                     else:
                         word_check += "." + str(event.key)
+
         if len(word_check) > 0:
             output = word_check.split(".")
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
+
         if y > 800:
             life -= 1
             x = 640
             y = 40
             i += 1
-            continue
-        if life == 0:
+
+        if time_count == 0:
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -323,6 +311,7 @@ def mini_game(list_word):
         message_dis(show_input, 100, (640, 665), yellow)
         show_input = ""
         y += speed
+        pygame.display.update()
         clock.tick(60)
 
 #================================================
