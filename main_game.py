@@ -1,8 +1,14 @@
-import time, pygame, random
+import time, pygame, random, socket
+
+from server import server_host
 GameDisplay = pygame.display.set_mode((1280, 920))
 clock = pygame.time.Clock()
 center = (640, 420)
 pause = True
+ipaddr = ""
+server = ""
+list_word = ["CAT", "ZZZ",
+                    "JAZZ", "THUNDER"]
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -15,6 +21,7 @@ purple = (150, 0, 200)
 #============helper function==========================
 # i = color out of range  / a = color in range
 def botton(msg, x, y, w, h, fontsize, i, a, order=None):
+    global list_word
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
@@ -27,9 +34,9 @@ def botton(msg, x, y, w, h, fontsize, i, a, order=None):
                 pygame.quit()
                 quit()
             if order == "mini_game":
-                list_word = ["CAT", "ZZZ",
-                             "JAZZ", "THUNDER"]
-                mini_game_mode(list_word)
+                mini_game_mode()
+            if order == "multi":
+                input_ip()
             if order == "rand_mode":
                 prepare()
             if order == "main_menu":
@@ -52,12 +59,15 @@ def text_objects(text, font, color=None):
     return textsurface, textsurface.get_rect()
 
 
-def message_dis(text, size, position, color=None):
+def message_dis(text, size, position, color=None, fontfam=None):
     if not color:
         color = black
+    if not fontfam:
+        fontfam = "Baby Blocks.ttf"
     # parameter is family , font size
-    sizetext = pygame.font.Font("Baby Blocks.ttf", size)
+    sizetext = pygame.font.Font(fontfam, size)
 # www.WebpagePublicity.com/free-fonts/b/Baby Blocks.ttf
+# www.WebpagePublicity.com/free-fonts/b/Billboard.ttf
     textsurface, textrec = text_objects(text, sizetext, color)
     textrec.center = position
     GameDisplay.blit(textsurface, textrec)
@@ -110,14 +120,103 @@ def paused():
                 pygame.quit()
                 quit()
         GameDisplay.fill(black)
-        message_dis("PAUSE", 50, (640,200), white)
+        message_dis("PAUSE", 50, (645,200), white)
         botton("RESUME", 440, 300, 400,100, 25, green, (0, 255, 0), "unpause")
         botton("MIAN MENU", 440, 400, 400,100, 25, green, (0, 255, 0), "main_menu")
         botton("QUIT", 540, 500, 200,100, 25, red, (255, 0, 0), "quit")
         pygame.display.update()
     return
+def connection(ipaddr, letters=None, receive=None):
+    global server
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    host = ipaddr
+    port = 9999
+    server.connect((host,port))
+    if receive:
+        while True:
+            msg = server.recv(2048)
+            msg = msg.decode("ascii")
+
+    if not letters:
+        letters = ""
+    letters = letters.encode("ascii")  
+    server.send(letters)
+   
 
 
+def input_ip():
+    global ipaddr
+    end = True
+    ip_check = ""
+    set_num = [i for i in "0123456789"]
+    set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
+                "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
+              pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
+    keypad = [pygame.K_0, pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9,
+                        pygame.K_KP0, pygame.K_KP1, pygame.K_KP2, pygame.K_KP3, pygame.K_KP4, pygame.K_KP5,
+                        pygame.K_KP6, pygame.K_KP7, pygame.K_KP8, pygame.K_KP9, 13, pygame.K_BACKSPACE, pygame.K_PERIOD , pygame.K_KP_PERIOD, pygame.K_ESCAPE ]
+    while True:
+        show_input = ""
+        GameDisplay.fill(black)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN and (event.key in keypad or event.key in keycap) :
+                if event.key == 13:
+                    try:
+                        connection(ipaddr)
+                        end = False
+                        mini_game_mode(True)
+                    except:
+                        continue
+                if event.key == pygame.K_ESCAPE:
+                    game_intro()
+                if event.key == pygame.K_BACKSPACE:
+                    ip_check = ip_check.split(" ")
+                    del ip_check[-1]
+                    ip_check = " ".join(ip_check)
+                    continue
+                if event.key == pygame.K_PERIOD or event.key == pygame.K_KP_PERIOD:
+                    ip_check +=" ." 
+                else:
+                    if ip_check == "":
+                        ip_check += str(event.key)
+                    else:
+                        ip_check += " " + str(event.key)
+                    continue
+        if ip_check != "":
+            output = ip_check.split(" ")
+            for z in output:
+                if z == ".":
+                    show_input += z
+                elif int(z) >= 97:
+                    z = int(z) - 97
+                    show_input += set_AtoZ[z]
+                        
+                elif int(z) > 9:
+                    z = keypad.index(int(z))
+                    z =z-10
+                    show_input += set_num[z]
+
+
+        # botton("HOW FAST YOU CAN TYPE", 850, 400, 400,
+        #        70, 15, green, (0, 255, 0), "start")
+        # botton("MAIN GAME", 850, 400, 400, 70, 20,
+        #        green, (0, 255, 0), "mini_game")
+        # botton("MUTIPLAYERS", 850, 470, 400, 70,
+        #        20, green, (0, 255, 0), "multi")
+        # botton("QUIT", 950, 610, 200, 70, 20, red, (255, 0, 0), "quit")
+        if end:
+            message_dis("input host name", 70, (640, 400),white, "Billboard.ttf")
+            message_dis(show_input, 50, (640, 465), yellow, "Billboard.ttf")
+        else:
+            game_intro()
+        if show_input != "":
+            ipaddr = show_input
+        pygame.display.update()
+        clock.tick(30)
 
 #=========Random AtoZ=====================================================
 
@@ -212,15 +311,15 @@ def how_fast_a_to_z_mode():
 
 #=========Mini Game================================
 
-def mini_game_mode(list_word):
+def mini_game_mode(multi=None):
     prepare(True)
-    global pause
+    global pause, list_word, ipaddr, server
     perfect = pygame.mixer.Sound('ding.wav')
     bad = pygame.mixer.Sound('wrong.wav')  # too long, make it short than this
     time_count = 120 #time in seconds
     pygame.time.set_timer(pygame.USEREVENT+1, 1000)
     i = 0
-    life = 3
+    unpause = True
     speed = 2
     score = 0
     word = ""
@@ -235,7 +334,7 @@ def mini_game_mode(list_word):
     while True:
         GameDisplay.fill(black)
         botton("          ", 125, 600, 980, 130, 30, red, red)
-        botton("1st", 1040, 50, 200, 70, 10, (0,255,0),(0,255,0))
+        botton("1st", 1040, 50, 200, 50, 10, (0,255,0),(0,255,0))
         botton("2nd", 1040, 100, 200, 50, 10,  green,green)
         botton("3rd", 1040, 150, 200, 50, 10, (200,0,250), (200,0,250))
         botton("4th", 1040, 200, 200, 50, 10, purple, purple)
@@ -252,6 +351,9 @@ def mini_game_mode(list_word):
                         word += "." + str(keycap[index])
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                if multi:
+                    letters = "quit"
+                    server.send(letters.encode("ascii"))
                 pygame.quit()
                 quit()
             if event.type == pygame.USEREVENT+1:
@@ -268,6 +370,7 @@ def mini_game_mode(list_word):
                     word_check = ".".join(word_check)
                     continue
                 elif event.key == pygame.K_SPACE or event.key == 13:
+
                     if word == word_check and abs(680 - y) < 100:
                         if abs(680 - y) < 25:
                             color = purple
@@ -320,6 +423,14 @@ def mini_game_mode(list_word):
                         word_check = ""
                         y = 0
                         i += 1
+                    if multi:
+                        try:
+                            letters = str(score)
+                            connection(ipaddr, letters)                    
+                        except:
+                            message_dis("disconnect", 50, (1040,100), white)
+                            pygame.display.update()
+                            server.close()
                 else:
                     if word_check == "":
                         word_check += str(event.key)
@@ -333,7 +444,7 @@ def mini_game_mode(list_word):
                 show_input += set_AtoZ[z]
 
         if y > 800:
-            life -= 1
+            time_count -= 5
             x = 640
             y = 40
             i += 1
@@ -350,6 +461,7 @@ def mini_game_mode(list_word):
                 GameDisplay.fill(black)
                 message_dis("TIME OUT", 100, (640, 460), red)
                 pygame.display.update()
+                connection(ipaddr, "", True)
         
         message_dis(show_input, 100, (640, 665), yellow)
         show_input = ""
@@ -361,7 +473,7 @@ def mini_game_mode(list_word):
 
 def game_intro():
     pygame.init()
-    pygame.display.set_caption('F*CKING TYPE')  # title ba
+    pygame.display.set_caption('Journey Of Typing')  # title ba
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -370,10 +482,10 @@ def game_intro():
         GameDisplay.fill(black)
         # botton("HOW FAST YOU CAN TYPE", 850, 400, 400,
         #        70, 15, green, (0, 255, 0), "start")
-        # botton("RANDOM TYPE", 850, 470, 400, 70,
-        #        30, green, (0, 255, 0), "rand_mode")
         botton("MAIN GAME", 850, 400, 400, 70, 20,
                green, (0, 255, 0), "mini_game")
+        botton("MUTIPLAYERS", 850, 470, 400, 70,
+               20, green, (0, 255, 0), "multi")
         botton("QUIT", 950, 610, 200, 70, 20, red, (255, 0, 0), "quit")
         pygame.display.update()
         clock.tick(30)
