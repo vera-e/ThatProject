@@ -1,10 +1,9 @@
 import time, pygame, random
+from p import word_list
 GameDisplay = pygame.display.set_mode((1280, 920))
 clock = pygame.time.Clock()
 center = (640, 420)
 pause = True
-ipaddr = ""
-server = ""
 #===========================
 
 mt1 = pygame.image.load("meteor0001.png")
@@ -19,8 +18,7 @@ mt9 = pygame.image.load("meteor0009.png")
 mt10 = pygame.image.load("meteor0010.png")
 mt11 = pygame.image.load("meteor0011.png")
 #===========================
-list_word = ["CAT", "ZZZ",
-                    "JAZZ", "THUNDER", "AAA", "BBB", "CCC", "DDD", "XXX", "FFFF", "KKKK", "IIII", "UUUUU", "OOO", "PPP", "GGG", "TTTT", "RRR"]
+list_word = word_list()
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -164,7 +162,7 @@ def input_name():
             except:
                 continue
         message_dis("New High Score", 70, (640, 200),white, "Billboard.ttf")
-        message_dis("input your name", 70, (640, 400),white, "Billboard.ttf")
+        message_dis("Submit your name", 70, (640, 400),white, "Billboard.ttf")
         message_dis(show_input, 50, (640, 465), yellow, "Billboard.ttf")
         if show_input != "":
             name = show_input
@@ -183,16 +181,25 @@ def high_score():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_intro()
          GameDisplay.fill(black)
-         message_dis(score_list[0][1], 70, (470, 155), white)
-         message_dis(score_list[0][0], 70, (170, 155), white)
-         message_dis(score_list[0][2], 70, (905, 155), white)
-         message_dis(score_list[1][1], 70, (470, 355), white)
-         message_dis(score_list[1][0], 70, (170, 355), white)
-         message_dis(score_list[1][2], 70, (905, 355), white)
-         message_dis(score_list[2][1], 70, (470, 555), white)
-         message_dis(score_list[2][0], 70, (170, 555), white)
-         message_dis(score_list[2][2], 70, (905, 555), white)
+         message_dis(score_list[0][1], 70, (500, 155), white)
+         message_dis(score_list[0][0], 70, (150, 155), white)
+         message_dis(score_list[0][2], 70, (920, 155), white)
+         message_dis(score_list[1][1], 70, (500, 255), white)
+         message_dis(score_list[1][0], 70, (150, 255), white)
+         message_dis(score_list[1][2], 70, (920, 255), white)
+         message_dis(score_list[2][1], 70, (500, 355), white)
+         message_dis(score_list[2][0], 70, (150, 355), white)
+         message_dis(score_list[2][2], 70, (920, 355), white)
+         message_dis(score_list[3][1], 70, (500, 455), white)
+         message_dis(score_list[3][0], 70, (150, 455), white)
+         message_dis(score_list[3][2], 70, (920, 455), white)
+         message_dis(score_list[4][1], 70, (500, 555), white)
+         message_dis(score_list[4][0], 70, (150, 555), white)
+         message_dis(score_list[4][2], 70, (920, 555), white)
          pygame.display.update()
 
 def write(score):
@@ -214,11 +221,12 @@ def write(score):
     score_data1 = " ".join(score_list[0])
     score_data2 = " ".join(score_list[1])
     score_data3 = " ".join(score_list[2])
+    score_data4 = " ".join(score_list[3])
+    score_data5 = " ".join(score_list[4])
     file = open("high_score.txt", "w")
-    score_data = ";".join([score_data1, score_data2, score_data3])
+    score_data = ";".join([score_data1, score_data2, score_data3, score_data4, score_data5])
     file.write(score_data)
     file.close()
-
 
 def meteor(x, y, n):
     if n < 1:
@@ -271,7 +279,8 @@ def mini_game_mode():
     unpause = True
     score = 0
     speedmax = 3
-    speed1, speed2, speed3, speed4, speed5 = random.randrange(1,speedmax), random.randrange(1,speedmax), random.randrange(1,speedmax), random.randrange(1,speedmax), random.randrange(1,speedmax)
+    speedmin = 1
+    speed1, speed2, speed3, speed4, speed5 = random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax)
     n1, n2, n3, n4, n5 = 0, 0, 0, 0, 0
     word1, word2, word3, word4, word5 = "", "", "", "", ""
     word_check = ""
@@ -284,9 +293,9 @@ def mini_game_mode():
               pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
     while True:
         GameDisplay.blit(bg, (0,0))
-        botton("          ", 125, 600, 980, 130, 30, red, red)
-        message_dis(str(life), 20, (105, 55), white)
-        message_dis(str(score), 30, (640, 850), white)
+        botton("            ", 125, 600, 980, 130, 30, red, red)
+        message_dis("LIFE x "+str(life), 30, (155, 755), white)
+        message_dis("score "+str(score), 40, (1055, 655), white)
         n1 = meteor(x1-50, y1, n1)
         n2 = meteor(x2-50, y2, n2)
         n3 = meteor(x3-50, y3, n3)
@@ -341,11 +350,11 @@ def mini_game_mode():
                     i = 1
                 else:
                     word5 += "." + str(keycap[index])
-        message_dis(show_word1, 20, (x1, y1), white)
-        message_dis(show_word2, 20, (x2, y2), white)
-        message_dis(show_word3, 20, (x3, y3), white)
-        message_dis(show_word4, 20, (x4, y4), white)
-        message_dis(show_word5, 20, (x5, y5), white)
+        message_dis(show_word1, 40, (x1, y1), white, "Billboard.ttf")
+        message_dis(show_word2, 40, (x2, y2), white, "Billboard.ttf")
+        message_dis(show_word3, 40, (x3, y3), white, "Billboard.ttf")
+        message_dis(show_word4, 40, (x4, y4), white, "Billboard.ttf")
+        message_dis(show_word5, 40, (x5, y5), white, "Billboard.ttf")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -366,6 +375,8 @@ def mini_game_mode():
                     if (word1 == word_check or word2 == word_check or word3 == word_check or word4 == word_check or word5 == word_check):
                         if score % 50 == 0:
                             speedmax += 1
+                        if score % 200 == 0:
+                            speedmin += 1
                         score += 1
                         pygame.display.update()
                         if word_check != "":
@@ -380,31 +391,31 @@ def mini_game_mode():
                             y1 = 0
                             x1 = random.randrange(100,233)
                             speed1 = 0
-                            speed1 = random.randrange(1, speedmax)
+                            speed1 = random.randrange(speedmin, speedmax)
                         elif word2 == word_check:
                             word2 = ""
                             y2 = 0
                             x2 = random.randrange(333,433)
                             speed2 = 0
-                            speed2 = random.randrange(1, speedmax)
+                            speed2 = random.randrange(speedmin, speedmax)
                         elif word3 == word_check:
                             word3 = ""
                             y3 = 0
                             x3 = random.randrange(533,633)
                             speed3 = 0
-                            speed3 = random.randrange(1, speedmax)
+                            speed3 = random.randrange(speedmin, speedmax)
                         elif word4 == word_check:
                             word4 = ""
                             y4 = 0
                             x4 = random.randrange(733,833)
                             speed4 = 0
-                            speed4 = random.randrange(1, speedmax)
+                            speed4 = random.randrange(speedmin, speedmax)
                         elif word5 == word_check:
                             word5 = ""
                             y5 = 0
                             x5 = random.randrange(933,1100)
                             speed5 = 0
-                            speed5 = random.randrange(1, speedmax)
+                            speed5 = random.randrange(speedmin, speedmax)
                         word_check = ""
                     else:
                         bad.play()
@@ -421,59 +432,65 @@ def mini_game_mode():
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-
         if y1 > 800:
             word1 = ""
             life -= 1
             x1 = random.randrange(100,233)
             y1 = 0
             speed1 = 0
-            speed1 = random.randrange(1, speedmax)
+            speed1 = random.randrange(speedmin, speedmax)
         if y2 > 800:
             word2 = ""
             life -= 1
             x2 = random.randrange(333,433)
             y2 = 0
             speed2 = 0
-            speed2 = random.randrange(1, speedmax)
+            speed2 = random.randrange(speedmin, speedmax)
         if y3 > 800:
             word3 = ""
             life -= 1
             x3 = random.randrange(533,633)
             y3 = 0
             speed3 = 0
-            speed3 = random.randrange(1, speedmax)
+            speed3 = random.randrange(speedmin, speedmax)
         if y4 > 800:
             word4 = ""
             life -= 1
             x4 = random.randrange(733,833)
             y4 = 0
             speed4 = 0
-            speed4 = random.randrange(1, speedmax)
+            speed4 = random.randrange(speedmin, speedmax)
         if y5 > 800:
             word5 = ""
             life -= 1
             x5 = random.randrange(933,1100)
             y5 = 0
             speed5 = 0
-            speed5 = random.randrange(1, speedmax)
+            speed5 = random.randrange(speedmin, speedmax)
         if life <1:
-            write(score)
+            check = 1
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
                         quit()
                     if event.type == pygame.KEYDOWN:
-                        pass
+                         if event.key == pygame.K_ESCAPE:
+                            game_intro()
+                         if event.key == pygame.K_SPACE:
+                            mini_game_mode()
                 GameDisplay.fill(black)
                 output = "Game Over"
-                message_dis(output, 100, (640, 460), red)
-                speedwpm = "Speed = "+str(score/time_count/60)+ "words/m"
-                message_dis(speedwpm, 60, (640, 560), red)
+                message_dis(output, 100, (640, 360), red)
+                message_dis("Your Score", 80, (640, 460))
+                message_dis(str(score), 80, (640, 560), red)
+                message_dis("Press 'SPACE' To Restart", 80, (640, 560), red)
                 pygame.display.update()
-
-        message_dis(show_input, 100, (640, 665), yellow)
+                if check ==1 :
+                    time.sleep(2)
+                    write(score)
+                    check = 2
+        message_dis(show_input, 150, (640, 665), yellow, "Billboard.ttf")
         show_input = ""
         y1 += speed1*0.75
         y2 += speed2*0.75
