@@ -1,5 +1,4 @@
-import time, pygame, random, socket
-
+import time, pygame, random
 GameDisplay = pygame.display.set_mode((1280, 920))
 clock = pygame.time.Clock()
 center = (640, 420)
@@ -172,6 +171,7 @@ def input_name():
         pygame.display.update()
         clock.tick(30)
 
+
 def high_score():
     file = open("high_score.txt", "r")
     file = file.read()
@@ -194,6 +194,31 @@ def high_score():
          message_dis(score_list[2][0], 70, (170, 555), white)
          message_dis(score_list[2][2], 70, (905, 555), white)
          pygame.display.update()
+
+def write(score):
+    file = open("high_score.txt", "r")
+    data = file.read()
+    data = data.split(";")
+    score_list = []
+    write = True
+    for i in data:
+        i = i.split()
+        if score > int(i[2]) and write:
+            name = input_name()
+            new = [i[0], name, str(score)]
+            score_list += [new]
+            score_list += [[str(int(i[0])+1), i[1], i[2]]]
+            write = False
+        else:
+            score_list += [i]
+    score_data1 = " ".join(score_list[0])
+    score_data2 = " ".join(score_list[1])
+    score_data3 = " ".join(score_list[2])
+    file = open("high_score.txt", "w")
+    score_data = ";".join([score_data1, score_data2, score_data3])
+    file.write(score_data)
+    file.close()
+
 
 def meteor(x, y, n):
     if n < 1:
@@ -433,28 +458,7 @@ def mini_game_mode():
             speed5 = 0
             speed5 = random.randrange(1, speedmax)
         if life <1:
-            file = open("high_score.txt", "r")
-            data = file.read()
-            data = data.split(";")
-            score_list = []
-            write = True
-            for i in data:
-                i = i.split()
-                if score > int(i[2]) and write:
-                    name = input_name()
-                    new = [i[0], name, str(score)]
-                    score_list += [new]
-                    score_list += [i]
-                    write = False
-                else:
-                    score_list += [i]
-            score_data1 = " ".join(score_list[0])
-            score_data2 = " ".join(score_list[1])
-            score_data3 = " ".join(score_list[2])
-            file = open("high_score.txt", "w")
-            score_data = ";".join([score_data1, score_data2, score_data3])
-            file.write(score_data)
-            file.close()
+            write(score)
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -485,7 +489,7 @@ def game_intro():
     bg = pygame.image.load("Space 01.jpg")
 
     pygame.init()
-    pygame.display.set_caption('Journey Of Typing')  # title ba
+    pygame.display.set_caption("Monk with Meteors")  # title ba
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
