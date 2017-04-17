@@ -350,11 +350,11 @@ def mini_game_mode():
                     i = 1
                 else:
                     word5 += "." + str(keycap[index])
-        message_dis(show_word1, 40, (x1, y1), white, "Billboard.ttf")
-        message_dis(show_word2, 40, (x2, y2), white, "Billboard.ttf")
-        message_dis(show_word3, 40, (x3, y3), white, "Billboard.ttf")
-        message_dis(show_word4, 40, (x4, y4), white, "Billboard.ttf")
-        message_dis(show_word5, 40, (x5, y5), white, "Billboard.ttf")
+        message_dis(show_word1, 35, (x1, y1), white, "Billboard.ttf")
+        message_dis(show_word2, 35, (x2, y2), white, "Billboard.ttf")
+        message_dis(show_word3, 35, (x3, y3), white, "Billboard.ttf")
+        message_dis(show_word4, 35, (x4, y4), white, "Billboard.ttf")
+        message_dis(show_word5, 35, (x5, y5), white, "Billboard.ttf")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -484,7 +484,7 @@ def mini_game_mode():
                 message_dis(output, 100, (640, 360), red)
                 message_dis("Your Score", 80, (640, 460))
                 message_dis(str(score), 80, (640, 560), red)
-                message_dis("Press 'SPACE' To Restart", 80, (640, 560), red)
+                message_dis("Press 'SPACE' To Restart", 40, (640, 660), red)
                 pygame.display.update()
                 if check ==1 :
                     time.sleep(2)
