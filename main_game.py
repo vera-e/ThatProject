@@ -17,6 +17,16 @@ mt8 = pygame.image.load("meteor0008.png")
 mt9 = pygame.image.load("meteor0009.png")
 mt10 = pygame.image.load("meteor0010.png")
 mt11 = pygame.image.load("meteor0011.png")
+start = pygame.image.load("start_icon.png")
+start_light  = pygame.image.load("start_icon_lighter.png")
+exit_light = pygame.image.load("exit_icon_lighter.png")
+exit = pygame.image.load("exit_icon.png")
+highscore =  pygame.image.load("high_score_icon.png")
+highscore_light = pygame.image.load("high_score_icon_lighter.png")
+howto = pygame.image.load("how_icon .png")
+howto_light = pygame.image.load("how_icon_lighter.png")
+credit = pygame.image.load("credit_icon.png")
+credit_light = pygame.image.load("credit_icon_lighter.png")
 #===========================
 list_word = word_list()
 #=========COLOR==============
@@ -60,6 +70,38 @@ def botton(msg, x, y, w, h, fontsize, i, a, order=None):
     textsurface, textrec = text_objects(msg, sizetext)
     textrec.center = (x + (w / 2), y + (h / 2))
     GameDisplay.blit(textsurface, textrec)
+
+
+def botton_im(icon, icon_light, x, y, w, h, order=None):
+    global list_word
+    click = pygame.mouse.get_pressed()
+    mouse = pygame.mouse.get_pos()
+    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+        GameDisplay.blit(icon_light, (x - (w / 2), y - (h / 2)))
+        # pygame.draw.rect(GameDisplay, a, (x, y, w, h))
+        if click[0] == 1 and order is not None:
+            if order == "start":
+                how_fast_a_to_z_mode()
+            if order == "quit":
+                pygame.quit()
+                quit()
+            if order == "mini_game":
+                mini_game_mode()
+            if order == "high_score":
+                high_score()
+            # if order == "rand_mode":
+            #     prepare()
+            if order == "main_menu":
+                game_intro()
+            if order == "unpause":
+                unpaused()
+    else:
+         GameDisplay.blit(icon, (x - (w / 2)+20, y - (h / 2)+20))
+        # pygame.draw.rect(GameDisplay, i, (x, y, w, h))
+    # sizetext = pygame.font.Font(
+    #     "Baby Blocks.ttf", fontsize)
+    # textsurface, textrec = text_objects(msg, sizetext)
+    # textrec.center = (x + (w / 2), y + (h / 2))
 
 
 def text_objects(text, font, color=None):
@@ -217,7 +259,10 @@ def write(score):
             score_list += [[str(int(i[0])+1), i[1], i[2]]]
             write = False
         else:
-            score_list += [i]
+            if write:
+                score_list += [i]
+            else:
+                score_list += [[str(int(i[0])+1), i[1], i[2]]]
     score_data1 = " ".join(score_list[0])
     score_data2 = " ".join(score_list[1])
     score_data3 = " ".join(score_list[2])
@@ -504,7 +549,6 @@ def mini_game_mode():
 
 def game_intro():
     bg = pygame.image.load("Space 01.jpg")
-
     pygame.init()
     pygame.display.set_caption("Monk with Meteors")  # title ba
     while True:
@@ -513,11 +557,11 @@ def game_intro():
                 pygame.quit()
                 quit()
         GameDisplay.blit(bg,(0,0))
-        botton("MAIN GAME", 850, 400, 400, 70, 20,
-               green, (0, 255, 0), "mini_game")
-        botton("Fame of Honor", 850, 470, 400, 70,
-               20, green, (0, 255, 0), "high_score")
-        botton("QUIT", 950, 610, 200, 70, 20, red, (255, 0, 0), "quit")
+        botton_im(start_light, start, 900, 270, 300, 300, "mini_game")
+        botton_im(howto_light, howto, 930, 510, 300, 300, "howtoplay")
+        botton_im(highscore_light, highscore, 100, 245, 200, 200, "high_score")
+        botton_im(credit_light, credit, 85, 475, 200, 200, "credit")
+        botton_im(exit_light, exit, 540, 750, 200, 200, "quit")
         pygame.display.update()
         clock.tick(30)
 game_intro()
