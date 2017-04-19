@@ -27,6 +27,13 @@ howto = pygame.image.load("how_icon .png")
 howto_light = pygame.image.load("how_icon_lighter.png")
 credit = pygame.image.load("credit_icon.png")
 credit_light = pygame.image.load("credit_icon_lighter.png")
+resume =  pygame.image.load("pause_button.png")
+resume_light =  pygame.image.load("pause_button_lighter.png")
+main_menu = pygame.image.load("main_manu_button.png")
+main_menu_light = pygame.image.load("main_manu_button_lighter.png")
+exitp = pygame.image.load("exit_button.png")
+exitp_light = pygame.image.load("exit_button_lighter.png")
+heart = pygame.image.load("Hearts_01_128x128_025.png")
 #===========================
 list_word = word_list()
 #=========COLOR==============
@@ -72,7 +79,7 @@ def botton(msg, x, y, w, h, fontsize, i, a, order=None):
     GameDisplay.blit(textsurface, textrec)
 
 
-def botton_im(icon, icon_light, x, y, w, h, order=None):
+def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
     global list_word
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
@@ -96,7 +103,10 @@ def botton_im(icon, icon_light, x, y, w, h, order=None):
             if order == "unpause":
                 unpaused()
     else:
-         GameDisplay.blit(icon, (x - (w / 2)+20, y - (h / 2)+20))
+        if p:
+            GameDisplay.blit(icon, (x - (w / 2), y - (h / 2)))
+        else:
+            GameDisplay.blit(icon, (x - (w / 2)+20, y - (h / 2)+20))
         # pygame.draw.rect(GameDisplay, i, (x, y, w, h))
     # sizetext = pygame.font.Font(
     #     "Baby Blocks.ttf", fontsize)
@@ -139,9 +149,12 @@ def paused():
                 quit()
         GameDisplay.fill(black)
         message_dis("PAUSE", 50, (645,200), white)
-        botton("RESUME", 440, 300, 400,100, 25, green, (0, 255, 0), "unpause")
-        botton("MIAN MENU", 440, 400, 400,100, 25, green, (0, 255, 0), "main_menu")
-        botton("QUIT", 540, 500, 200,100, 25, red, (255, 0, 0), "quit")
+        # botton("RESUME", 440, 300, 400,100, 25, green, (0, 255, 0), "unpause")
+        botton_im(resume_light, resume, 561, 320, 180, 60, "unpause", True)
+        # botton("MIAN MENU", 440, 400, 400,100, 25, green, (0, 255, 0), "main_menu")
+        botton_im(main_menu_light, main_menu, 561, 415, 180, 60, "main_menu", True)
+        # botton("QUIT", 540, 500, 200,100, 25, red, (255, 0, 0), "quit")
+        botton_im(exitp_light, exitp, 586, 510, 180, 60, "quit", True)
         pygame.display.update()
     return
 
@@ -339,7 +352,8 @@ def mini_game_mode():
     while True:
         GameDisplay.blit(bg, (0,0))
         botton("            ", 125, 600, 980, 130, 30, red, red)
-        message_dis("LIFE x "+str(life), 30, (155, 755), white)
+        GameDisplay.blit(heart, (45, 730))
+        message_dis(" x "+str(life), 30, (155, 755), white)
         message_dis("score "+str(score), 40, (1055, 655), white)
         n1 = meteor(x1-50, y1, n1)
         n2 = meteor(x2-50, y2, n2)
@@ -557,7 +571,7 @@ def game_intro():
                 pygame.quit()
                 quit()
         GameDisplay.blit(bg,(0,0))
-        botton_im(start_light, start, 900, 270, 300, 300, "mini_game")
+        botton_im(start_light, start, 920, 245, 300, 250, "mini_game")
         botton_im(howto_light, howto, 930, 510, 300, 300, "howtoplay")
         botton_im(highscore_light, highscore, 100, 245, 200, 200, "high_score")
         botton_im(credit_light, credit, 85, 475, 200, 200, "credit")
