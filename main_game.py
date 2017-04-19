@@ -5,7 +5,10 @@ clock = pygame.time.Clock()
 center = (640, 420)
 pause = True
 #===========================
-
+keyboard1 = pygame.image.load("1.png")
+keyboard2 = pygame.image.load("2.png")
+keyboard3 = pygame.image.load("3.png")
+keyboard4 = pygame.image.load("4.png")
 mt1 = pygame.image.load("meteor0001.png")
 mt2 = pygame.image.load("meteor0002.png")
 mt3 = pygame.image.load("meteor0003.png")
@@ -27,8 +30,8 @@ howto = pygame.image.load("how_icon .png")
 howto_light = pygame.image.load("how_icon_lighter.png")
 credit = pygame.image.load("credit_icon.png")
 credit_light = pygame.image.load("credit_icon_lighter.png")
-resume =  pygame.image.load("pause_button.png")
-resume_light =  pygame.image.load("pause_button_lighter.png")
+resume =  pygame.image.load("resume_button.png")
+resume_light =  pygame.image.load("resume_button_lighter.png")
 main_menu = pygame.image.load("main_manu_button.png")
 main_menu_light = pygame.image.load("main_manu_button_lighter.png")
 exitp = pygame.image.load("exit_button.png")
@@ -83,12 +86,10 @@ def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
     global list_word
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:
+    if x + w + 30 > mouse[0] > x and y + h + 30 > mouse[1] > y:
         GameDisplay.blit(icon_light, (x - (w / 2), y - (h / 2)))
         # pygame.draw.rect(GameDisplay, a, (x, y, w, h))
         if click[0] == 1 and order is not None:
-            if order == "start":
-                how_fast_a_to_z_mode()
             if order == "quit":
                 pygame.quit()
                 quit()
@@ -286,6 +287,24 @@ def write(score):
     file.write(score_data)
     file.close()
 
+
+def keyboard(m):
+    # if m < 1:
+    #     GameDisplay.blit(keyboard1, (0, 0))
+    #     m += 0.4
+    # elif m < 2:
+    #     GameDisplay.blit(keyboard1, (0, 0))
+    #     m += 0.4
+    # elif m < 3:
+    #     GameDisplay.blit(keyboard1, (0, 0))
+    #     m += 0.4
+    # elif m < 4:
+    #     GameDisplay.blit(keyboard1, (0, 0))
+    #     m += 0.4
+    #     if m > 4:
+    #         m = 0
+    return m
+
 def meteor(x, y, n):
     if n < 1:
         GameDisplay.blit(mt1, (x, y-140))
@@ -339,7 +358,7 @@ def mini_game_mode():
     speedmax = 3
     speedmin = 1
     speed1, speed2, speed3, speed4, speed5 = random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax)
-    n1, n2, n3, n4, n5 = 0, 0, 0, 0, 0
+    n1, n2, n3, n4, n5, m = 0, 0, 0, 0, 0, 0
     word1, word2, word3, word4, word5 = "", "", "", "", ""
     word_check = ""
     show_input = ""
@@ -350,8 +369,17 @@ def mini_game_mode():
     keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
               pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
     while True:
-        GameDisplay.blit(bg, (0,0))
-        botton("            ", 125, 600, 980, 130, 30, red, red)
+        if m <= 1:
+            GameDisplay.blit(keyboard1, (0, 0))
+        elif m <= 2:
+            GameDisplay.blit(keyboard2, (0, 0))
+        elif m <= 3:
+            GameDisplay.blit(keyboard3, (0, 0))
+        elif m <= 4:
+            GameDisplay.blit(keyboard4, (0, 0))
+            if m >= 4:
+                m = 0
+        # botton("            ", 125, 600, 980, 130, 30, red, red)
         GameDisplay.blit(heart, (45, 730))
         message_dis(" x "+str(life), 30, (155, 755), white)
         message_dis("score "+str(score), 40, (1055, 655), white)
@@ -414,6 +442,7 @@ def mini_game_mode():
         message_dis(show_word3, 35, (x3, y3), white, "Billboard.ttf")
         message_dis(show_word4, 35, (x4, y4), white, "Billboard.ttf")
         message_dis(show_word5, 35, (x5, y5), white, "Billboard.ttf")
+        pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -421,6 +450,10 @@ def mini_game_mode():
             if event.type == pygame.USEREVENT+1:
                 time_count += 1
             if event.type == pygame.KEYDOWN and event.key in keycap:
+                if len(word_check) > 60:
+                    continue
+                pygame.display.update() 
+                m += 1
                 if event.key == pygame.K_ESCAPE:
                     pause = True
                     paused()
@@ -437,7 +470,6 @@ def mini_game_mode():
                         if score % 200 == 0:
                             speedmin += 1
                         score += 1
-                        pygame.display.update()
                         if word_check != "":
                             output = word_check.split(".")
                             for z in output:
@@ -491,35 +523,35 @@ def mini_game_mode():
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-        if y1 > 800:
+        if y1 > 720:
             word1 = ""
             life -= 1
             x1 = random.randrange(100,233)
             y1 = 0
             speed1 = 0
             speed1 = random.randrange(speedmin, speedmax)
-        if y2 > 800:
+        if y2 > 650:
             word2 = ""
             life -= 1
             x2 = random.randrange(333,433)
             y2 = 0
             speed2 = 0
             speed2 = random.randrange(speedmin, speedmax)
-        if y3 > 800:
+        if y3 > 630:
             word3 = ""
             life -= 1
             x3 = random.randrange(533,633)
             y3 = 0
             speed3 = 0
             speed3 = random.randrange(speedmin, speedmax)
-        if y4 > 800:
+        if y4 > 650:
             word4 = ""
             life -= 1
             x4 = random.randrange(733,833)
             y4 = 0
             speed4 = 0
             speed4 = random.randrange(speedmin, speedmax)
-        if y5 > 800:
+        if y5 > 720:
             word5 = ""
             life -= 1
             x5 = random.randrange(933,1100)
@@ -551,20 +583,20 @@ def mini_game_mode():
                     check = 2
         message_dis(show_input, 150, (640, 665), yellow, "Billboard.ttf")
         show_input = ""
-        y1 += speed1*0.75
-        y2 += speed2*0.75
-        y3 += speed3*0.75
-        y4 += speed4*0.75
-        y5 += speed5*0.75
-        pygame.display.update()
+        y1 += speed1*0.45
+        y2 += speed2*0.45
+        y3 += speed3*0.45
+        y4 += speed4*0.45
+        y5 += speed5*0.45
+        pygame.display.update() 
         clock.tick(30)
 
 #================================================
 
 def game_intro():
-    bg = pygame.image.load("Space 01.jpg")
+    bg = pygame.image.load("mainmenu-1.jpg")
     pygame.init()
-    pygame.display.set_caption("Monk with Meteors")  # title ba
+    pygame.display.set_caption("METEOTYPE")  # title ba
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -573,8 +605,8 @@ def game_intro():
         GameDisplay.blit(bg,(0,0))
         botton_im(start_light, start, 920, 245, 300, 250, "mini_game")
         botton_im(howto_light, howto, 930, 510, 300, 300, "howtoplay")
-        botton_im(highscore_light, highscore, 100, 245, 200, 200, "high_score")
-        botton_im(credit_light, credit, 85, 475, 200, 200, "credit")
+        botton_im(highscore_light, highscore, 120, 245, 200, 200, "high_score")
+        botton_im(credit_light, credit, 105, 475, 200, 200, "credit")
         botton_im(exit_light, exit, 540, 750, 200, 200, "quit")
         pygame.display.update()
         clock.tick(30)
