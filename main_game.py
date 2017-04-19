@@ -450,10 +450,6 @@ def mini_game_mode():
             if event.type == pygame.USEREVENT+1:
                 time_count += 1
             if event.type == pygame.KEYDOWN and event.key in keycap:
-                if len(word_check) > 60:
-                    continue
-                pygame.display.update() 
-                m += 1
                 if event.key == pygame.K_ESCAPE:
                     pause = True
                     paused()
@@ -517,6 +513,10 @@ def mini_game_mode():
                         word_check += str(event.key)
                     else:
                         word_check += "." + str(event.key)
+                if m < 4:
+                    m += 1
+                else:
+                    m =0
 
         if word_check != "":
             output = word_check.split(".")
