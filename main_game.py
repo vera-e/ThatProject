@@ -37,8 +37,8 @@ main_menu_light = pygame.image.load("main_manu_button_lighter.png")
 exitp = pygame.image.load("exit_button.png")
 exitp_light = pygame.image.load("exit_button_lighter.png")
 heart = pygame.image.load("Hearts_01_128x128_025.png")
+damscreen = pygame.image.load("red.png")
 #===========================
-list_word = word_list()
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -50,45 +50,54 @@ purple = (150, 0, 200)
 
 #============helper function==========================
 # i = color out of range  / a = color in range
-def botton(msg, x, y, w, h, fontsize, i, a, order=None):
-    global list_word
-    click = pygame.mouse.get_pressed()
-    mouse = pygame.mouse.get_pos()
-    if x + w > mouse[0] > x and y + h > mouse[1] > y:
-        pygame.draw.rect(GameDisplay, a, (x, y, w, h))
-        if click[0] == 1 and order is not None:
+# def botton(msg, x, y, w, h, fontsize, i, a, order=None):
+#     global list_word
+#     click = pygame.mouse.get_pressed()
+#     mouse = pygame.mouse.get_pos()
+#     if x + w > mouse[0] > x and y + h > mouse[1] > y:
+#         pygame.draw.rect(GameDisplay, a, (x, y, w, h))
+#         if click[0] == 1 and order is not None:
 
-            if order == "start":
-                how_fast_a_to_z_mode()
-            if order == "quit":
-                pygame.quit()
-                quit()
-            if order == "mini_game":
-                mini_game_mode()
-            if order == "high_score":
-                high_score()
-            # if order == "rand_mode":
-            #     prepare()
-            if order == "main_menu":
-                game_intro()
-            if order == "unpause":
-                unpaused()
-    else:
-        pygame.draw.rect(GameDisplay, i, (x, y, w, h))
-    sizetext = pygame.font.Font(
-        "Baby Blocks.ttf", fontsize)
-    textsurface, textrec = text_objects(msg, sizetext)
-    textrec.center = (x + (w / 2), y + (h / 2))
-    GameDisplay.blit(textsurface, textrec)
+#             if order == "start":
+#                 how_fast_a_to_z_mode()
+#             if order == "quit":
+#                 pygame.quit()
+#                 quit()
+#             if order == "mini_game":
+#                 mini_game_mode()
+#             if order == "high_score":
+#                 high_score()
+#             # if order == "rand_mode":
+#             #     prepare()
+#             if order == "main_menu":
+#                 game_intro()
+#             if order == "unpause":
+#                 unpaused()
+#     else:
+#         pygame.draw.rect(GameDisplay, i, (x, y, w, h))
+#     sizetext = pygame.font.Font(
+#         "Baby Blocks.ttf", fontsize)
+#     textsurface, textrec = text_objects(msg, sizetext)
+#     textrec.center = (x + (w / 2), y + (h / 2))
+#     GameDisplay.blit(textsurface, textrec)
 
 
 def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
-    global list_word
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
-    if x + w + 30 > mouse[0] > x and y + h + 30 > mouse[1] > y:
+    if p:
+        x1 = x + w+ 70
+        x2 = x - 80
+        y1 = y + h
+        y2 = y -30
+    else:
+        x1 = x + w +50
+        x2 = x - 40
+        y1 = y + h-30
+        y2 = y - 40
+
+    if (x1 > mouse[0] > x2) and (y1 > mouse[1] > y2)  :
         GameDisplay.blit(icon_light, (x - (w / 2), y - (h / 2)))
-        # pygame.draw.rect(GameDisplay, a, (x, y, w, h))
         if click[0] == 1 and order is not None:
             if order == "quit":
                 pygame.quit()
@@ -97,8 +106,6 @@ def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
                 mini_game_mode()
             if order == "high_score":
                 high_score()
-            # if order == "rand_mode":
-            #     prepare()
             if order == "main_menu":
                 game_intro()
             if order == "unpause":
@@ -108,11 +115,7 @@ def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
             GameDisplay.blit(icon, (x - (w / 2), y - (h / 2)))
         else:
             GameDisplay.blit(icon, (x - (w / 2)+20, y - (h / 2)+20))
-        # pygame.draw.rect(GameDisplay, i, (x, y, w, h))
-    # sizetext = pygame.font.Font(
-    #     "Baby Blocks.ttf", fontsize)
-    # textsurface, textrec = text_objects(msg, sizetext)
-    # textrec.center = (x + (w / 2), y + (h / 2))
+
 
 
 def text_objects(text, font, color=None):
@@ -150,27 +153,22 @@ def paused():
                 quit()
         GameDisplay.fill(black)
         message_dis("PAUSE", 50, (645,200), white)
-        # botton("RESUME", 440, 300, 400,100, 25, green, (0, 255, 0), "unpause")
         botton_im(resume_light, resume, 561, 320, 180, 60, "unpause", True)
-        # botton("MIAN MENU", 440, 400, 400,100, 25, green, (0, 255, 0), "main_menu")
         botton_im(main_menu_light, main_menu, 561, 415, 180, 60, "main_menu", True)
-        # botton("QUIT", 540, 500, 200,100, 25, red, (255, 0, 0), "quit")
-        botton_im(exitp_light, exitp, 586, 510, 180, 60, "quit", True)
+        botton_im(exitp_light, exitp, 547, 510, 150, 60, "quit", True)
         pygame.display.update()
     return
 
 
 def input_name():
     end = True
+    name = ""
     ip_check = ""
     set_num = [i for i in "0123456789"]
     set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                 "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
               pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
-    keypad = [pygame.K_0, pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9,
-                        pygame.K_KP0, pygame.K_KP1, pygame.K_KP2, pygame.K_KP3, pygame.K_KP4, pygame.K_KP5,
-                        pygame.K_KP6, pygame.K_KP7, pygame.K_KP8, pygame.K_KP9, 13, pygame.K_BACKSPACE, pygame.K_PERIOD , pygame.K_KP_PERIOD, pygame.K_ESCAPE ]
     while True:
         show_input = ""
         GameDisplay.fill(black)
@@ -180,8 +178,10 @@ def input_name():
                 quit()
             if event.type == pygame.KEYDOWN:                   
                 if event.key == 13:
-                        return name
-            if event.type == pygame.KEYDOWN and (event.key in keypad or event.key in keycap) :
+                    if name == "":
+                        name = "USER"
+                    return name
+            if event.type == pygame.KEYDOWN and (event.key in keycap) :
                 if event.key == pygame.K_SPACE:
                     continue
                 if event.key == pygame.K_ESCAPE:
@@ -191,16 +191,14 @@ def input_name():
                     del ip_check[-1]
                     ip_check = " ".join(ip_check)
                     continue
-                if event.key == pygame.K_PERIOD or event.key == pygame.K_KP_PERIOD:
-                    ip_check +=" ." 
-                else:
-                    if len(ip_check.split(" ")) > 6:
-                        continue
-                    if ip_check == "":
-                        ip_check += str(event.key)
-                    else:
-                        ip_check += " " + str(event.key)
+
+                if len(ip_check.split(" ")) > 5:
                     continue
+                if ip_check == "":
+                    ip_check += str(event.key)
+                else:
+                    ip_check += " " + str(event.key)
+                continue
         if ip_check != "":
             output = ip_check.split(" ")
             try:
@@ -258,6 +256,7 @@ def high_score():
          message_dis(score_list[4][2], 70, (920, 555), white)
          pygame.display.update()
 
+
 def write(score):
     file = open("high_score.txt", "r")
     data = file.read()
@@ -287,23 +286,6 @@ def write(score):
     file.write(score_data)
     file.close()
 
-
-def keyboard(m):
-    # if m < 1:
-    #     GameDisplay.blit(keyboard1, (0, 0))
-    #     m += 0.4
-    # elif m < 2:
-    #     GameDisplay.blit(keyboard1, (0, 0))
-    #     m += 0.4
-    # elif m < 3:
-    #     GameDisplay.blit(keyboard1, (0, 0))
-    #     m += 0.4
-    # elif m < 4:
-    #     GameDisplay.blit(keyboard1, (0, 0))
-    #     m += 0.4
-    #     if m > 4:
-    #         m = 0
-    return m
 
 def meteor(x, y, n):
     if n < 1:
@@ -345,24 +327,26 @@ def meteor(x, y, n):
 #=========Mini Game================================
 
 def mini_game_mode():
+    list_word = word_list()
     #A mash up of some graphics from the Glitch assets by Tiny Speck.
-    bg = pygame.image.load("Grid2.png")
-    global pause, list_word
+    global pause
+    speed_reduce = 0.60
     perfect = pygame.mixer.Sound('ding.wav')
     bad = pygame.mixer.Sound('wrong.wav')  # too long, make it short than this
     time_count = 0 #time in seconds
     pygame.time.set_timer(pygame.USEREVENT+1, 1000)
     life = 5
+    damage = False
     unpause = True
     score = 0
     speedmax = 3
     speedmin = 1
     speed1, speed2, speed3, speed4, speed5 = random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax)
-    n1, n2, n3, n4, n5, m = 0, 0, 0, 0, 0, 0
+    n1, n2, n3, n4, n5, m, l = 0, 0, 0, 0, 0, 0, 0
     word1, word2, word3, word4, word5 = "", "", "", "", ""
     word_check = ""
     show_input = ""
-    x1, x2, x3, x4, x5 = random.randrange(100,233), random.randrange(333,433), random.randrange(533,633), random.randrange(733,833), random.randrange(933,1100)
+    x1, x2, x3, x4, x5 = random.randrange(150,233), random.randrange(353,483), random.randrange(583,683), random.randrange(733,883), random.randrange(933,1100)
     y1, y2, y3, y4, y5 = 0, 0, 0, 0, 0
     set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                 "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
@@ -383,21 +367,22 @@ def mini_game_mode():
         GameDisplay.blit(heart, (45, 730))
         message_dis(" x "+str(life), 30, (155, 755), white)
         message_dis("score "+str(score), 40, (1055, 655), white)
-        n1 = meteor(x1-50, y1, n1)
         n2 = meteor(x2-50, y2, n2)
         n3 = meteor(x3-50, y3, n3)
         n4 = meteor(x4-50, y4, n4)
-        n5 = meteor(x5-50, y5, n5)
-        if word1 == "":
-            show_word1 = list_word.pop(0)
-            i = 0
-            for j in show_word1:
-                index = set_AtoZ.index(j)
-                if word1 == "":
-                    word1 += str(keycap[index])
-                    i = 1
-                else:
-                    word1 += "." + str(keycap[index])
+        if score >= 20:           
+            if word1 == "":
+                show_word1 = list_word.pop(0)
+                i = 0
+                for j in show_word1:
+                    index = set_AtoZ.index(j)
+                    if word1 == "":
+                        word1 += str(keycap[index])
+                        i = 1
+                    else:
+                        word1 += "." + str(keycap[index])
+            n1 = meteor(x1-50, y1, n1)
+            message_dis(show_word1, 35, (x1, y1), white, "Billboard.ttf")
         if word2 == "":
             i = 0
             show_word2 = list_word.pop(0)
@@ -427,21 +412,22 @@ def mini_game_mode():
                     i = 1
                 else:
                     word4 += "." + str(keycap[index])
-        if word5 == "":
-            i = 0
-            show_word5 = list_word.pop(0)
-            for j in show_word5:
-                index = set_AtoZ.index(j)
-                if word5 == "" :
-                    word5 += str(keycap[index])
-                    i = 1
-                else:
-                    word5 += "." + str(keycap[index])
-        message_dis(show_word1, 35, (x1, y1), white, "Billboard.ttf")
+        if score >= 50:
+            if word5 == "":
+                i = 0
+                show_word5 = list_word.pop(0)
+                for j in show_word5:
+                    index = set_AtoZ.index(j)
+                    if word5 == "" :
+                        word5 += str(keycap[index])
+                        i = 1
+                    else:
+                        word5 += "." + str(keycap[index])
+            n5 = meteor(x5-50, y5, n5)
+            message_dis(show_word5, 35, (x5, y5), white, "Billboard.ttf")
         message_dis(show_word2, 35, (x2, y2), white, "Billboard.ttf")
         message_dis(show_word3, 35, (x3, y3), white, "Billboard.ttf")
         message_dis(show_word4, 35, (x4, y4), white, "Billboard.ttf")
-        message_dis(show_word5, 35, (x5, y5), white, "Billboard.ttf")
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -461,9 +447,11 @@ def mini_game_mode():
                     continue
                 elif event.key == pygame.K_SPACE or event.key == 13:
                     if (word1 == word_check or word2 == word_check or word3 == word_check or word4 == word_check or word5 == word_check):
-                        if score % 50 == 0:
+                        if score % 45 == 0:
                             speedmax += 1
-                        if score % 200 == 0:
+                            if speed_reduce < 1:
+                                speed_reduce += 0.05
+                        if score % 100 == 0:
                             speedmin += 1
                         score += 1
                         if word_check != "":
@@ -523,7 +511,8 @@ def mini_game_mode():
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-        if y1 > 720:
+        if y1 > 700:
+            damage = True
             word1 = ""
             life -= 1
             x1 = random.randrange(100,233)
@@ -531,6 +520,7 @@ def mini_game_mode():
             speed1 = 0
             speed1 = random.randrange(speedmin, speedmax)
         if y2 > 650:
+            damage = True
             word2 = ""
             life -= 1
             x2 = random.randrange(333,433)
@@ -538,6 +528,7 @@ def mini_game_mode():
             speed2 = 0
             speed2 = random.randrange(speedmin, speedmax)
         if y3 > 630:
+            damage = True
             word3 = ""
             life -= 1
             x3 = random.randrange(533,633)
@@ -545,19 +536,27 @@ def mini_game_mode():
             speed3 = 0
             speed3 = random.randrange(speedmin, speedmax)
         if y4 > 650:
+            damage = True
             word4 = ""
             life -= 1
-            x4 = random.randrange(733,833)
+            x4 = random.randrange(783,833)
             y4 = 0
             speed4 = 0
             speed4 = random.randrange(speedmin, speedmax)
-        if y5 > 720:
+        if y5 > 700:
+            damage = True
             word5 = ""
             life -= 1
             x5 = random.randrange(933,1100)
             y5 = 0
             speed5 = 0
             speed5 = random.randrange(speedmin, speedmax)
+        if damage:
+            GameDisplay.blit(damscreen, (0,0))
+            l += 1
+            if l > 4:
+                damage = False
+                l = 0
         if life <1:
             check = 1
             while True:
@@ -583,11 +582,13 @@ def mini_game_mode():
                     check = 2
         message_dis(show_input, 150, (640, 665), yellow, "Billboard.ttf")
         show_input = ""
-        y1 += speed1*0.45
-        y2 += speed2*0.45
-        y3 += speed3*0.45
-        y4 += speed4*0.45
-        y5 += speed5*0.45
+        if score >= 20:
+            y1 += speed1*speed_reduce
+        y2 += speed2*speed_reduce
+        y3 += speed3*speed_reduce
+        y4 += speed4*speed_reduce
+        if score >= 50:
+            y5 += speed5*speed_reduce
         pygame.display.update() 
         clock.tick(30)
 
