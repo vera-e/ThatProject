@@ -1,7 +1,0 @@
-    def draw(self):
-        #game loop - draw
-        background = pg.image.load('bg.png').convert()
-        self.screen.blit(background, (0,0))
-        self.all_sprites.draw(self.screen)
-        self.draw_text("score : " + str(self.score),26,white,width*3/20,15)
-        pg.display.flip()

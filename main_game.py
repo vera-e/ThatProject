@@ -5,40 +5,40 @@ clock = pygame.time.Clock()
 center = (640, 420)
 pause = True
 #===========================
-keyboard1 = pygame.image.load("1.png")
-keyboard2 = pygame.image.load("2.png")
-keyboard3 = pygame.image.load("3.png")
-keyboard4 = pygame.image.load("4.png")
-mt1 = pygame.image.load("meteor0001.png")
-mt2 = pygame.image.load("meteor0002.png")
-mt3 = pygame.image.load("meteor0003.png")
-mt4 = pygame.image.load("meteor0004.png")
-mt5 = pygame.image.load("meteor0005.png")
-mt6 = pygame.image.load("meteor0006.png")
-mt7 = pygame.image.load("meteor0007.png")
-mt8 = pygame.image.load("meteor0008.png")
-mt9 = pygame.image.load("meteor0009.png")
-mt10 = pygame.image.load("meteor0010.png")
-mt11 = pygame.image.load("meteor0011.png")
-start = pygame.image.load("start_icon.png")
-start_light  = pygame.image.load("start_icon_lighter.png")
-exit_light = pygame.image.load("exit_icon_lighter.png")
-exit = pygame.image.load("exit_icon.png")
-highscore =  pygame.image.load("high_score_icon.png")
-highscore_light = pygame.image.load("high_score_icon_lighter.png")
-howto = pygame.image.load("how_icon .png")
-howto_light = pygame.image.load("how_icon_lighter.png")
-credit = pygame.image.load("credit_icon.png")
-credit_light = pygame.image.load("credit_icon_lighter.png")
-resume =  pygame.image.load("resume_button.png")
-resume_light =  pygame.image.load("resume_button_lighter.png")
-main_menu = pygame.image.load("main_manu_button.png")
-main_menu_light = pygame.image.load("main_manu_button_lighter.png")
-exitp = pygame.image.load("exit_button.png")
-exitp_light = pygame.image.load("exit_button_lighter.png")
-heart = pygame.image.load("Hearts_01_128x128_025.png")
-damscreen = pygame.image.load("red.png")
-#===========================
+keyboard1 = pygame.image.load("Pics/BG_main/1.png")
+keyboard2 = pygame.image.load("Pics/BG_main/2.png")
+keyboard3 = pygame.image.load("Pics/BG_main/3.png")
+keyboard4 = pygame.image.load("Pics/BG_main/4.png")
+mt1 = pygame.image.load("Pics/Meteor/meteor0001.png")
+mt2 = pygame.image.load("Pics/Meteor/meteor0002.png")
+mt3 = pygame.image.load("Pics/Meteor/meteor0003.png")
+mt4 = pygame.image.load("Pics/Meteor/meteor0004.png")
+mt5 = pygame.image.load("Pics/Meteor/meteor0005.png")
+mt6 = pygame.image.load("Pics/Meteor/meteor0006.png")
+mt7 = pygame.image.load("Pics/Meteor/meteor0007.png")
+mt8 = pygame.image.load("Pics/Meteor/meteor0008.png")
+mt9 = pygame.image.load("Pics/Meteor/meteor0009.png")
+mt10 = pygame.image.load("Pics/Meteor/meteor0010.png")
+mt11 = pygame.image.load("Pics/Meteor/meteor0011.png")
+start = pygame.image.load("Pics/Icon/start_icon.png")
+start_light  = pygame.image.load("Pics/Icon/start_icon_lighter.png")
+exit_light = pygame.image.load("Pics/Icon/exit_icon_lighter.png")
+exit = pygame.image.load("Pics/Icon/exit_icon.png")
+highscore =  pygame.image.load("Pics/Icon/high_score_icon.png")
+highscore_light = pygame.image.load("Pics/Icon/high_score_icon_lighter.png")
+howto = pygame.image.load("Pics/Icon/how_icon .png")
+howto_light = pygame.image.load("Pics/Icon/how_icon_lighter.png")
+credit = pygame.image.load("Pics/Icon/credit_icon.png")
+credit_light = pygame.image.load("Pics/Icon/credit_icon_lighter.png")
+resume =  pygame.image.load("Pics/Icon/resume_button.png")
+resume_light =  pygame.image.load("Pics/Icon/resume_button_lighter.png")
+main_menu = pygame.image.load("Pics/Icon/main_manu_button.png")
+main_menu_light = pygame.image.load("Pics/Icon/main_manu_button_lighter.png")
+exitp = pygame.image.load("Pics/Icon/exit_button.png")
+exitp_light = pygame.image.load("Pics/Icon/exit_button_lighter.png")
+heart = pygame.image.load("Pics/BG_main/Hearts_01_128x128_025.png")
+damscreen = pygame.image.load("Pics/BG_main/red.png")
+#========================
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -49,37 +49,43 @@ yellow = (200, 200, 0)
 purple = (150, 0, 200)
 
 #============helper function==========================
-# i = color out of range  / a = color in range
-# def botton(msg, x, y, w, h, fontsize, i, a, order=None):
-#     global list_word
-#     click = pygame.mouse.get_pressed()
-#     mouse = pygame.mouse.get_pos()
-#     if x + w > mouse[0] > x and y + h > mouse[1] > y:
-#         pygame.draw.rect(GameDisplay, a, (x, y, w, h))
-#         if click[0] == 1 and order is not None:
+def prepare():
+     countdown = pygame.mixer.Sound('sounds/countdown.wav')
+     m = 0
+     life = 5
+     score = 0
+     time_count = 3 #time in seconds
+     pygame.time.set_timer(pygame.USEREVENT+1, 1000)
+     countdown.play()
+     while time_count >=0:
+        if m <= 1:
+            GameDisplay.blit(keyboard1, (0, 0))
+        elif m <= 2:
+            GameDisplay.blit(keyboard2, (0, 0))
+        elif m <= 3:
+            GameDisplay.blit(keyboard3, (0, 0))
+        elif m <= 4:
+            GameDisplay.blit(keyboard4, (0, 0))
+            if m >= 4:
+                m = 0
+        GameDisplay.blit(heart, (45, 780))
+        message_dis(" x "+str(life), 30, (155, 805), white)
+        message_dis("score "+str(score), 40, (1055, 655), white)
+        message_dis(str(time_count), 300, center, white)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN  :
+                if m < 4:
+                    m += 1
+                else:
+                    m =0
+            if event.type == pygame.USEREVENT+1:
+                time_count -= 1
+        pygame.display.update()
 
-#             if order == "start":
-#                 how_fast_a_to_z_mode()
-#             if order == "quit":
-#                 pygame.quit()
-#                 quit()
-#             if order == "mini_game":
-#                 mini_game_mode()
-#             if order == "high_score":
-#                 high_score()
-#             # if order == "rand_mode":
-#             #     prepare()
-#             if order == "main_menu":
-#                 game_intro()
-#             if order == "unpause":
-#                 unpaused()
-#     else:
-#         pygame.draw.rect(GameDisplay, i, (x, y, w, h))
-#     sizetext = pygame.font.Font(
-#         "Baby Blocks.ttf", fontsize)
-#     textsurface, textrec = text_objects(msg, sizetext)
-#     textrec.center = (x + (w / 2), y + (h / 2))
-#     GameDisplay.blit(textsurface, textrec)
+     return
 
 
 def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
@@ -329,12 +335,17 @@ def meteor(x, y, n):
 def mini_game_mode():
     list_word = word_list()
     #A mash up of some graphics from the Glitch assets by Tiny Speck.
+    prepare()
     global pause
+    perfect = pygame.mixer.Sound('sounds/ding.wav')
+    perfect.set_volume(.2)
+    bad = pygame.mixer.Sound('sounds/wrong.wav')  # too long, make it short than this
+    bad.set_volume(.2)
+    alarm = pygame.mixer.Sound('sounds/Alarm Siren.wav') # Audio Productions on youtube
+    alarm.set_volume(.25)
+    explode = pygame.mixer.Sound('sounds/Explosion Sound effect.wav')
+    explode.set_volume(.2)
     speed_reduce = 0.60
-    perfect = pygame.mixer.Sound('ding.wav')
-    bad = pygame.mixer.Sound('wrong.wav')  # too long, make it short than this
-    time_count = 0 #time in seconds
-    pygame.time.set_timer(pygame.USEREVENT+1, 1000)
     life = 5
     damage = False
     unpause = True
@@ -346,7 +357,7 @@ def mini_game_mode():
     word1, word2, word3, word4, word5 = "", "", "", "", ""
     word_check = ""
     show_input = ""
-    x1, x2, x3, x4, x5 = random.randrange(150,233), random.randrange(353,483), random.randrange(583,683), random.randrange(733,883), random.randrange(933,1100)
+    x1, x2, x3, x4, x5 = random.randrange(150,233), random.randrange(353,483), random.randrange(583,683), random.randrange(803,883), random.randrange(983,1100)
     y1, y2, y3, y4, y5 = 0, 0, 0, 0, 0
     set_AtoZ = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
                 "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
@@ -364,13 +375,13 @@ def mini_game_mode():
             if m >= 4:
                 m = 0
         # botton("            ", 125, 600, 980, 130, 30, red, red)
-        GameDisplay.blit(heart, (45, 730))
-        message_dis(" x "+str(life), 30, (155, 755), white)
+        GameDisplay.blit(heart, (45, 780))
+        message_dis(" x "+str(life), 30, (155, 805), white)
         message_dis("score "+str(score), 40, (1055, 655), white)
         n2 = meteor(x2-50, y2, n2)
         n3 = meteor(x3-50, y3, n3)
         n4 = meteor(x4-50, y4, n4)
-        if score >= 20:           
+        if score >= 30:           
             if word1 == "":
                 show_word1 = list_word.pop(0)
                 i = 0
@@ -412,7 +423,7 @@ def mini_game_mode():
                     i = 1
                 else:
                     word4 += "." + str(keycap[index])
-        if score >= 50:
+        if score >= 30:
             if word5 == "":
                 i = 0
                 show_word5 = list_word.pop(0)
@@ -433,9 +444,7 @@ def mini_game_mode():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.USEREVENT+1:
-                time_count += 1
-            if event.type == pygame.KEYDOWN and event.key in keycap:
+            if (event.type == pygame.KEYDOWN and event.key in keycap) :
                 if event.key == pygame.K_ESCAPE:
                     pause = True
                     paused()
@@ -446,7 +455,7 @@ def mini_game_mode():
                     word_check = ".".join(word_check)
                     continue
                 elif event.key == pygame.K_SPACE or event.key == 13:
-                    if (word1 == word_check or word2 == word_check or word3 == word_check or word4 == word_check or word5 == word_check):
+                    if ((word1 == word_check and score >=30) or word2 == word_check or word3 == word_check or word4 == word_check or (word5 == word_check and score >=30)):
                         if score % 45 == 0:
                             speedmax += 1
                             if speed_reduce < 1:
@@ -461,7 +470,7 @@ def mini_game_mode():
                                 show_input += set_AtoZ[z]
                             perfect.play()
                             show_input = ""
-                        if word1 == word_check:
+                        if word1 == word_check :
                             word1 = ""
                             y1 = 0
                             x1 = random.randrange(100,233)
@@ -479,16 +488,16 @@ def mini_game_mode():
                             x3 = random.randrange(533,633)
                             speed3 = 0
                             speed3 = random.randrange(speedmin, speedmax)
-                        elif word4 == word_check:
+                        elif word4 == word_check :
                             word4 = ""
                             y4 = 0
-                            x4 = random.randrange(733,833)
+                            x4 = random.randrange(803,833)
                             speed4 = 0
                             speed4 = random.randrange(speedmin, speedmax)
-                        elif word5 == word_check:
+                        elif word5 == word_check :
                             word5 = ""
                             y5 = 0
-                            x5 = random.randrange(933,1100)
+                            x5 = random.randrange(983,1100)
                             speed5 = 0
                             speed5 = random.randrange(speedmin, speedmax)
                         word_check = ""
@@ -511,6 +520,17 @@ def mini_game_mode():
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
+        if y1 > 530 or y2 > 480 or y3 > 460 or y4 > 480 or y5 > 480:
+            alarm_check = True
+        else:
+            alarm_check = False
+            a = True
+        if alarm_check and a:
+            alarm.play()
+            a = False
+        if a:
+            alarm.fadeout(1)
+            a = True
         if y1 > 700:
             damage = True
             word1 = ""
@@ -539,7 +559,7 @@ def mini_game_mode():
             damage = True
             word4 = ""
             life -= 1
-            x4 = random.randrange(783,833)
+            x4 = random.randrange(803,883)
             y4 = 0
             speed4 = 0
             speed4 = random.randrange(speedmin, speedmax)
@@ -547,17 +567,20 @@ def mini_game_mode():
             damage = True
             word5 = ""
             life -= 1
-            x5 = random.randrange(933,1100)
+            x5 = random.randrange(983,1100)
             y5 = 0
             speed5 = 0
             speed5 = random.randrange(speedmin, speedmax)
         if damage:
+            explode.play()
             GameDisplay.blit(damscreen, (0,0))
             l += 1
             if l > 4:
                 damage = False
                 l = 0
         if life <1:
+            explode.play()
+            pygame.mixer.fadeout(1)
             check = 1
             while True:
                 for event in pygame.event.get():
@@ -582,20 +605,20 @@ def mini_game_mode():
                     check = 2
         message_dis(show_input, 150, (640, 665), yellow, "Billboard.ttf")
         show_input = ""
-        if score >= 20:
+        if score >= 30:
             y1 += speed1*speed_reduce
         y2 += speed2*speed_reduce
         y3 += speed3*speed_reduce
         y4 += speed4*speed_reduce
-        if score >= 50:
+        if score >= 30:
             y5 += speed5*speed_reduce
-        pygame.display.update() 
+        pygame.display.update()
         clock.tick(30)
 
 #================================================
 
 def game_intro():
-    bg = pygame.image.load("mainmenu-1.jpg")
+    bg = pygame.image.load("Pics/BG_intro/mainmenu-1.jpg")
     pygame.init()
     pygame.display.set_caption("METEOTYPE")  # title ba
     while True:
