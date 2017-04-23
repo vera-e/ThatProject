@@ -38,6 +38,8 @@ exitp = pygame.image.load("Pics/Icon/exit_button.png")
 exitp_light = pygame.image.load("Pics/Icon/exit_button_lighter.png")
 heart = pygame.image.load("Pics/BG_main/Hearts_01_128x128_025.png")
 damscreen = pygame.image.load("Pics/BG_main/red.png")
+siren = pygame.image.load("Pics/BG_main/siren.png")
+siren_light = pygame.image.load("Pics/BG_main/sirenlight.png")
 #========================
 #=========COLOR==============
 black = (0, 0, 0)
@@ -54,6 +56,14 @@ def prepare():
      m = 0
      life = 5
      score = 0
+     k = 1
+     s = 0
+     key_sound1 = pygame.mixer.Sound('sounds/t1.wav')
+     key_sound1.set_volume(3)
+     key_sound2 = pygame.mixer.Sound('sounds/t2.wav')
+     key_sound2.set_volume(3)
+     key_sound3 = pygame.mixer.Sound('sounds/enter.wav')
+     key_sound3.set_volume(3)
      time_count = 3 #time in seconds
      pygame.time.set_timer(pygame.USEREVENT+1, 1000)
      countdown.play()
@@ -68,9 +78,11 @@ def prepare():
             GameDisplay.blit(keyboard4, (0, 0))
             if m >= 4:
                 m = 0
-        GameDisplay.blit(heart, (45, 580))
-        message_dis(" x "+str(life), 30, (155, 605), white)
-        message_dis("score "+str(score), 40, (855, 555), white)
+        GameDisplay.blit(siren, (15, 600)) 
+        GameDisplay.blit(siren, (1005, 580))   
+        GameDisplay.blit(heart, (15, 30))
+        message_dis("X "+str(life), 20, (105, 50), white)
+        message_dis(str(score), 40, (1005, 55), white)
         message_dis(str(time_count), 200,  (540, 300), white)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -81,11 +93,25 @@ def prepare():
                     m += 1
                 else:
                     m =0
+                if k == 1:
+                    key_sound1.play()
+                    k = 2
+                elif k == 2:
+                    key_sound2.play()
+                    k = 1
+                if s == 0:
+                    GameDisplay.blit(siren_light, (15,600))
+                    GameDisplay.blit(siren_light, (1005,580))
+                    s = 1
+                elif s == 1:
+                    GameDisplay.blit(siren, (15, 600)) 
+                    GameDisplay.blit(siren, (1005, 580))   
+                    s = 0  
+                if event.key == pygame.K_SPACE or event.key == 13:
+                    key_sound3.play()
             if event.type == pygame.USEREVENT+1:
                 time_count -= 1
         pygame.display.update()
-
-     return
 
 
 def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
@@ -158,15 +184,15 @@ def paused():
                 pygame.quit()
                 quit()
         GameDisplay.fill(black)
-        message_dis("PAUSE", 50, (645,200), white)
-        botton_im(resume_light, resume, 561, 320, 180, 60, "unpause", True)
-        botton_im(main_menu_light, main_menu, 561, 415, 180, 60, "main_menu", True)
-        botton_im(exitp_light, exitp, 547, 510, 150, 60, "quit", True)
+        message_dis("PAUSE", 50, (545,130), white)
+        botton_im(resume_light, resume, 513, 250, 180, 60, "unpause", True)
+        botton_im(main_menu_light, main_menu, 513, 317, 180, 60, "main_menu", True)
+        botton_im(exitp_light, exitp, 498, 384, 150, 60, "quit", True)
         pygame.display.update()
     return
 
 
-def input_name():
+def input_name(score):
     end = True
     name = ""
     ip_check = ""
@@ -221,10 +247,12 @@ def input_name():
                         show_input += set_num[z]
             except:
                 continue
-        message_dis("New High Score", 70, (640, 200),white, "Billboard.ttf")
-        message_dis("Submit your name", 70, (640, 400),white, "Billboard.ttf")
-        message_dis(show_input, 50, (640, 465), yellow, "Billboard.ttf")
+        message_dis("NEW HIGH SCORE", 70, (540, 150),white, "Billboard.ttf")
+        message_dis(str(score), 70, (530, 250),white, "Billboard.ttf")
+        message_dis("SUBMIT YOUR NAME", 70, (540, 350),white, "Billboard.ttf")
+        message_dis(show_input, 50, (540, 475), yellow, "Billboard.ttf")
         if show_input != "":
+            message_dis("PRESS ENTER TO SUBMIT", 30, (540, 530),white, "Billboard.ttf")
             name = show_input
         pygame.display.update()
         clock.tick(30)
@@ -272,7 +300,7 @@ def write(score):
     for i in data:
         i = i.split()
         if score > int(i[2]) and write:
-            name = input_name()
+            name = input_name(score)
             new = [i[0], name, str(score)]
             score_list += [new]
             score_list += [[str(int(i[0])+1), i[1], i[2]]]
@@ -335,27 +363,34 @@ def meteor(x, y, n):
 def mini_game_mode():
     list_word = word_list()
     #A mash up of some graphics from the Glitch assets by Tiny Speck.
-    prepare()
     global pause
     bgsound = pygame.mixer.Sound('sounds/soundbg.wav')
-    bgsound.set_volume(.05)
+    bgsound.set_volume(.2)
     perfect = pygame.mixer.Sound('sounds/ding.wav')
-    perfect.set_volume(.1)
+    perfect.set_volume(.5)
     bad = pygame.mixer.Sound('sounds/wrong.wav')  # too long, make it short than this
-    bad.set_volume(.1)
+    bad.set_volume(.5)
     alarm = pygame.mixer.Sound('sounds/Alarm Siren.wav') # Audio Productions on youtube
-    alarm.set_volume(.1)
+    alarm.set_volume(.5)
     explode = pygame.mixer.Sound('sounds/Explosion Sound effect.wav')
-    explode.set_volume(.1)
+    explode.set_volume(.5)
+    key_sound1 = pygame.mixer.Sound('sounds/t1.wav')
+    key_sound1.set_volume(4)
+    key_sound2 = pygame.mixer.Sound('sounds/t2.wav')
+    key_sound2.set_volume(4)
+    key_sound3 = pygame.mixer.Sound('sounds/enter.wav')
+    key_sound3.set_volume(4)
+    prepare()
     speed_reduce = 0.60
     life = 5
     damage = False
     unpause = True
+    bgsound_check = True
     score = 0
     speedmax = 3
     speedmin = 1
     speed1, speed2, speed3, speed4, speed5 = random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax)
-    n1, n2, n3, n4, n5, m, l = 0, 0, 0, 0, 0, 0, 0
+    n1, n2, n3, n4, n5, m, s, l, k = 0, 0, 0, 0, 0, 0, 0, 0, 1
     word1, word2, word3, word4, word5 = "", "", "", "", ""
     word_check = ""
     show_input = ""
@@ -366,7 +401,6 @@ def mini_game_mode():
     keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
               pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
     while True:
-        bgsound.play(loops=-1)
         if m <= 1:
             GameDisplay.blit(keyboard1, (0, 0))
         elif m <= 2:
@@ -378,12 +412,15 @@ def mini_game_mode():
             if m >= 4:
                 m = 0
         # botton("            ", 125, 600, 980, 130, 30, red, red)
-        GameDisplay.blit(heart, (45, 580))
-        message_dis(" x "+str(life), 30, (155, 605), white)
-        message_dis("score "+str(score), 40, (855, 555), white)
+        GameDisplay.blit(heart, (15, 30))
+        message_dis("X "+str(life), 20, (105, 50), white)
+        message_dis(str(score), 40, (1005, 55), white)
         n2 = meteor(x2-50, y2, n2)
         n3 = meteor(x3-50, y3, n3)
         n4 = meteor(x4-50, y4, n4)
+        if bgsound_check:
+            bgsound.play(loops=-1)
+            bgsound_check = False
         if score >= 30:           
             if word1 == "":
                 show_word1 = list_word.pop(0)
@@ -448,6 +485,16 @@ def mini_game_mode():
                 pygame.quit()
                 quit()
             if (event.type == pygame.KEYDOWN and event.key in keycap) :
+                if k == 1:
+                    key_sound1.play()
+                    k = 2
+                elif k == 2:
+                    key_sound2.play()
+                    k = 1
+                if m < 4:
+                    m += 1
+                else:
+                    m =0
                 if event.key == pygame.K_ESCAPE:
                     pause = True
                     paused()
@@ -458,6 +505,7 @@ def mini_game_mode():
                     word_check = ".".join(word_check)
                     continue
                 elif event.key == pygame.K_SPACE or event.key == 13:
+                    key_sound3.play()
                     if ((word1 == word_check and score >=30) or word2 == word_check or word3 == word_check or word4 == word_check or (word5 == word_check and score >=30)):
                         if score % 45 == 0:
                             speedmax += 1
@@ -513,28 +561,34 @@ def mini_game_mode():
                         word_check += str(event.key)
                     else:
                         word_check += "." + str(event.key)
-                if m < 4:
-                    m += 1
-                else:
-                    m =0
 
         if word_check != "":
             output = word_check.split(".")
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-        if y1 > 430 or y2 > 400 or y3 > 380 or y4 > 400 or y5 > 430:
+        if y1 > 460 or y2 > 430 or y3 > 410 or y4 > 430 or y5 > 460:
             alarm_check = True
+            if s == 0:
+                GameDisplay.blit(siren_light, (15,600))
+                GameDisplay.blit(siren_light, (1005,580))
+                s = 1
+            elif s == 1:
+                GameDisplay.blit(siren, (15, 600)) 
+                GameDisplay.blit(siren, (1005, 580))   
+                s = 0  
         else:
+            GameDisplay.blit(siren, (15, 600))
+            GameDisplay.blit(siren, (1005, 580))   
             alarm_check = False
             a = True
         if alarm_check and a:
             alarm.play()
             a = False
         if a:
-            alarm.fadeout(1)
+            alarm.fadeout(500)
             a = True
-        if y1 > 550:
+        if y1 > 600:
             damage = True
             word1 = ""
             life -= 1
@@ -542,7 +596,7 @@ def mini_game_mode():
             y1 = 0
             speed1 = 0
             speed1 = random.randrange(speedmin, speedmax)
-        if y2 > 500:
+        if y2 > 550:
             damage = True
             word2 = ""
             life -= 1
@@ -550,7 +604,7 @@ def mini_game_mode():
             y2 = 0
             speed2 = 0
             speed2 = random.randrange(speedmin, speedmax)
-        if y3 > 480:
+        if y3 > 530:
             damage = True
             word3 = ""
             life -= 1
@@ -558,7 +612,7 @@ def mini_game_mode():
             y3 = 0
             speed3 = 0
             speed3 = random.randrange(speedmin, speedmax)
-        if y4 > 500:
+        if y4 > 550:
             damage = True
             word4 = ""
             life -= 1
@@ -566,7 +620,7 @@ def mini_game_mode():
             y4 = 0
             speed4 = 0
             speed4 = random.randrange(speedmin, speedmax)
-        if y5 > 550:
+        if y5 > 600:
             damage = True
             word5 = ""
             life -= 1
@@ -583,7 +637,7 @@ def mini_game_mode():
                 l = 0
         if life <1:
             explode.play()
-            pygame.mixer.fadeout(1)
+            pygame.mixer.fadeout(1000)
             check = 1
             while True:
                 for event in pygame.event.get():
@@ -593,28 +647,28 @@ def mini_game_mode():
                     if event.type == pygame.KEYDOWN:
                          if event.key == pygame.K_ESCAPE:
                             game_intro()
-                         if event.key == pygame.K_SPACE:
+                         if event.key == pygame.K_SPACE:    
                             mini_game_mode()
                 GameDisplay.fill(black)
-                output = "Game Over"
-                message_dis(output, 80, (540, 200), red)
-                message_dis("Your Score", 60, (540, 400), red)
-                message_dis(str(score), 60, (540, 510), red)
-                message_dis("Press 'SPACE' To Restart", 40, (640, 660), red)
+                output = "GAME OVER"
+                message_dis(output, 60, (540, 150), red)
+                message_dis("Your Score", 60, (540, 300), red)
+                message_dis(str(score), 60, (540, 460), red)
+                message_dis("Press 'SPACE' To Restart", 30, (540, 670), red)
                 pygame.display.update()
                 if check ==1 :
                     time.sleep(2)
                     write(score)
                     check = 2
-        message_dis(show_input, 100, (540, 535), yellow, "Billboard.ttf")
+        message_dis(show_input, 90, (540, 535), yellow, "Billboard.ttf")
         show_input = ""
         if score >= 30:
-            y1 += speed1*speed_reduce
-        y2 += speed2*speed_reduce
-        y3 += speed3*speed_reduce
-        y4 += speed4*speed_reduce
+            y1 += speed1*0.5
+        y2 += speed2*0.5
+        y3 += speed3*0.5
+        y4 += speed4*0.5
         if score >= 30:
-            y5 += speed5*speed_reduce
+            y5 += speed5*0.5
         pygame.display.update()
         clock.tick(30)
 
