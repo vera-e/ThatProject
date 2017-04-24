@@ -502,7 +502,6 @@ def mini_game_mode():
         message_dis(show_word2, 35, (x2, y2), white, "Billboard.ttf")
         message_dis(show_word3, 35, (x3, y3), white, "Billboard.ttf")
         message_dis(show_word4, 35, (x4, y4), white, "Billboard.ttf")
-        # pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
