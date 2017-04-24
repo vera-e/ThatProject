@@ -42,6 +42,8 @@ siren = pygame.image.load("Pics/BG_main/siren.png")
 siren_light = pygame.image.load("Pics/BG_main/sirenlight.png")
 #========================
 bgsound = False
+bgsound_intro = False
+first = True
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -143,6 +145,8 @@ def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
                 game_intro()
             if order == "unpause":
                 unpaused()
+            if order == "credit":
+                credit_()
     else:
         if p:
             GameDisplay.blit(icon, (x - (w / 2), y - (h / 2)))
@@ -359,12 +363,30 @@ def meteor(x, y, n):
         if n > 11:
             n = 0
     return  n
+
+def credit_():
+    show = pygame.image.load("Pics/BG_main/credit.jpg")  # title ba
+    while True:
+        click = pygame.mouse.get_pressed()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_intro()
+        GameDisplay.blit(show, (0,0))
+        pygame.display.update()
+        clock.tick(30)
 #=========Mini Game================================
 
 def mini_game_mode():
     list_word = word_list()
     #A mash up of some graphics from the Glitch assets by Tiny Speck.
-    global pause, bgsound
+    global pause, bgsound, bgsound_intro
+    if bgsound_intro:
+        bgsound_intro.fadeout(500)
+        bgsound_intro = False
     bgsound = pygame.mixer.Sound('sounds/soundbg.wav')
     bgsound.set_volume(.2)
     perfect = pygame.mixer.Sound('sounds/ding.wav')
@@ -676,8 +698,8 @@ def mini_game_mode():
 #================================================
 
 def game_intro():
-    global bgsound
-    if not bgsound:
+    global bgsound, bgsound_intro, first
+    if not bgsound and first:
         story_list = []
         for i in range(1, 5):
             if i == 1:
@@ -691,13 +713,15 @@ def game_intro():
             for x in range(1, j+1):
                 story_list += [pygame.image.load("Pics/BG_intro/Story/"+str(i)+"/"+str(i)+"-"+str(x)+".png")]
         story = story_list.pop(0)
+        first = False
     else:
         story = False
-
     bg = pygame.image.load("Pics/BG_intro/mainmenu-1.jpg")
-    pygame.init()
+    if not bgsound_intro:
+        bgsound_intro = pygame.mixer.Sound('sounds/intro.wav')
+        bgsound_intro.set_volume(.2)
+        bgsound_intro.play(loops=-1)
     pygame.display.set_caption("METEOTYPE")  # title ba
-    click_check = False
     while True:
         click = pygame.mouse.get_pressed()
         for event in pygame.event.get():
@@ -725,4 +749,5 @@ def game_intro():
             botton_im(exit_light, exit, 500, 640, 200, 200, "quit")
         pygame.display.update()
         clock.tick(30)
+pygame.init()
 game_intro()
