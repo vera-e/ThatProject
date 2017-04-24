@@ -41,6 +41,7 @@ damscreen = pygame.image.load("Pics/BG_main/red.png")
 siren = pygame.image.load("Pics/BG_main/siren.png")
 siren_light = pygame.image.load("Pics/BG_main/sirenlight.png")
 #========================
+bgsound = False
 #=========COLOR==============
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -78,8 +79,8 @@ def prepare():
             GameDisplay.blit(keyboard4, (0, 0))
             if m >= 4:
                 m = 0
-        GameDisplay.blit(siren, (15, 600)) 
-        GameDisplay.blit(siren, (1005, 580))   
+        GameDisplay.blit(siren, (235, 455)) 
+        GameDisplay.blit(siren, (760, 455))   
         GameDisplay.blit(heart, (15, 30))
         message_dis("X "+str(life), 20, (105, 50), white)
         message_dis(str(score), 40, (1005, 55), white)
@@ -100,12 +101,12 @@ def prepare():
                     key_sound2.play()
                     k = 1
                 if s == 0:
-                    GameDisplay.blit(siren_light, (15,600))
-                    GameDisplay.blit(siren_light, (1005,580))
+                    GameDisplay.blit(siren_light, (235,455))
+                    GameDisplay.blit(siren_light, (760,455))
                     s = 1
                 elif s == 1:
-                    GameDisplay.blit(siren, (15, 600)) 
-                    GameDisplay.blit(siren, (1005, 580))   
+                    GameDisplay.blit(siren, (235, 455)) 
+                    GameDisplay.blit(siren, (760, 455))   
                     s = 0  
                 if event.key == pygame.K_SPACE or event.key == 13:
                     key_sound3.play()
@@ -363,7 +364,7 @@ def meteor(x, y, n):
 def mini_game_mode():
     list_word = word_list()
     #A mash up of some graphics from the Glitch assets by Tiny Speck.
-    global pause
+    global pause, bgsound
     bgsound = pygame.mixer.Sound('sounds/soundbg.wav')
     bgsound.set_volume(.2)
     perfect = pygame.mixer.Sound('sounds/ding.wav')
@@ -567,19 +568,19 @@ def mini_game_mode():
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-        if y1 > 460 or y2 > 430 or y3 > 410 or y4 > 430 or y5 > 460:
+        if y1 > 490 or y2 > 460 or y3 > 440 or y4 > 460 or y5 > 490:
             alarm_check = True
             if s == 0:
-                GameDisplay.blit(siren_light, (15,600))
-                GameDisplay.blit(siren_light, (1005,580))
+                GameDisplay.blit(siren_light, (235,455))
+                GameDisplay.blit(siren_light, (760, 455))
                 s = 1
             elif s == 1:
-                GameDisplay.blit(siren, (15, 600)) 
-                GameDisplay.blit(siren, (1005, 580))   
+                GameDisplay.blit(siren, (235, 455)) 
+                GameDisplay.blit(siren, (760,455))   
                 s = 0  
         else:
-            GameDisplay.blit(siren, (15, 600))
-            GameDisplay.blit(siren, (1005, 580))   
+            GameDisplay.blit(siren, (235, 455))
+            GameDisplay.blit(siren, (760, 455))   
             alarm_check = False
             a = True
         if alarm_check and a:
@@ -588,7 +589,7 @@ def mini_game_mode():
         if a:
             alarm.fadeout(500)
             a = True
-        if y1 > 600:
+        if y1 > 650:
             damage = True
             word1 = ""
             life -= 1
@@ -596,7 +597,7 @@ def mini_game_mode():
             y1 = 0
             speed1 = 0
             speed1 = random.randrange(speedmin, speedmax)
-        if y2 > 550:
+        if y2 > 590:
             damage = True
             word2 = ""
             life -= 1
@@ -604,7 +605,7 @@ def mini_game_mode():
             y2 = 0
             speed2 = 0
             speed2 = random.randrange(speedmin, speedmax)
-        if y3 > 530:
+        if y3 > 560:
             damage = True
             word3 = ""
             life -= 1
@@ -612,7 +613,7 @@ def mini_game_mode():
             y3 = 0
             speed3 = 0
             speed3 = random.randrange(speedmin, speedmax)
-        if y4 > 550:
+        if y4 > 590:
             damage = True
             word4 = ""
             life -= 1
@@ -620,7 +621,7 @@ def mini_game_mode():
             y4 = 0
             speed4 = 0
             speed4 = random.randrange(speedmin, speedmax)
-        if y5 > 600:
+        if y5 > 650:
             damage = True
             word5 = ""
             life -= 1
@@ -675,20 +676,53 @@ def mini_game_mode():
 #================================================
 
 def game_intro():
+    global bgsound
+    if not bgsound:
+        story_list = []
+        for i in range(1, 5):
+            if i == 1:
+                j = 3
+            if i == 2:
+                j = 3
+            if i == 3:
+                j = 2
+            if i == 4:
+                j = 2
+            for x in range(1, j+1):
+                story_list += [pygame.image.load("Pics/BG_intro/Story/"+str(i)+"/"+str(i)+"-"+str(x)+".png")]
+        story = story_list.pop(0)
+    else:
+        story = False
+
     bg = pygame.image.load("Pics/BG_intro/mainmenu-1.jpg")
     pygame.init()
     pygame.display.set_caption("METEOTYPE")  # title ba
+    click_check = False
     while True:
+        click = pygame.mouse.get_pressed()
         for event in pygame.event.get():
+            if bgsound:
+                pygame.mixer.fadeout(1500)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-        GameDisplay.blit(bg,(0,0))
-        botton_im(start_light, start, 840, 245, 300, 250, "mini_game")
-        botton_im(howto_light, howto, 830, 490, 300, 300, "howtoplay")
-        botton_im(highscore_light, highscore, 120, 245, 200, 200, "high_score")
-        botton_im(credit_light, credit, 105, 445, 200, 200, "credit")
-        botton_im(exit_light, exit, 500, 640, 200, 200, "quit")
+            if not bgsound:
+                if event.type == pygame.KEYDOWN :
+                    try:
+                        story = story_list.pop(0)
+                    except:
+                        story = False
+
+        if story:
+            GameDisplay.blit(story, (0,0))
+            message_dis("PRESS any key to continue", 20, (540, 650), red)
+        else:
+            GameDisplay.blit(bg,(0,0))
+            botton_im(start_light, start, 840, 245, 300, 250, "mini_game")
+            botton_im(howto_light, howto, 830, 490, 300, 300, "howtoplay")
+            botton_im(highscore_light, highscore, 120, 245, 200, 200, "high_score")
+            botton_im(credit_light, credit, 105, 445, 200, 200, "credit")
+            botton_im(exit_light, exit, 500, 640, 200, 200, "quit")
         pygame.display.update()
         clock.tick(30)
 game_intro()
