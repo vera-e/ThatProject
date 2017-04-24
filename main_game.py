@@ -40,6 +40,8 @@ heart = pygame.image.load("Pics/BG_main/Hearts_01_128x128_025.png")
 damscreen = pygame.image.load("Pics/BG_main/red.png")
 siren = pygame.image.load("Pics/BG_main/siren.png")
 siren_light = pygame.image.load("Pics/BG_main/sirenlight.png")
+back1 = pygame.image.load("Pics/Icon/back1.png")
+back2 = pygame.image.load("Pics/Icon/back2.png")
 #========================
 bgsound = False
 bgsound_intro = False
@@ -54,6 +56,18 @@ yellow = (200, 200, 0)
 purple = (150, 0, 200)
 
 #============helper function==========================
+def fade():
+    newSurf = pygame.Surface((1080, 720))
+    x = 225
+    while x > 0:
+        # GameDisplay.fill()  #or whatever your background color is
+        newSurf.set_alpha(x)
+        GameDisplay.blit(newSurf, (0,0))
+        x -= 1
+        pygame.display.flip()
+        # pygame.time.delay()
+
+
 def prepare():
      countdown = pygame.mixer.Sound('sounds/countdown.wav')
      m = 0
@@ -70,7 +84,13 @@ def prepare():
      time_count = 3 #time in seconds
      pygame.time.set_timer(pygame.USEREVENT+1, 1000)
      countdown.play()
+     t = 40
      while time_count >=0:
+        if t < 255:
+            t += 12
+            keyboard1.set_alpha(t)
+            GameDisplay.blit(keyboard1,(0,0))
+            pygame.time.delay(100)
         if m <= 1:
             GameDisplay.blit(keyboard1, (0, 0))
         elif m <= 2:
@@ -120,6 +140,8 @@ def prepare():
 def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
+    click_sound = pygame.mixer.Sound('sounds/click_sound.wav')
+    click_sound.set_volume(.5)
     if p:
         x1 = x + w+ 70
         x2 = x - 80
@@ -134,9 +156,14 @@ def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
     if (x1 > mouse[0] > x2) and (y1 > mouse[1] > y2)  :
         GameDisplay.blit(icon_light, (x - (w / 2), y - (h / 2)))
         if click[0] == 1 and order is not None:
+            click_sound.play()
             if order == "quit":
                 pygame.quit()
                 quit()
+            if order == "howtoplay":
+                how_to_play()
+            if order == "back":
+                game_intro()
             if order == "mini_game":
                 mini_game_mode()
             if order == "high_score":
@@ -180,7 +207,7 @@ def unpaused():
     global pause
     pause = False
     return
-
+ 
 
 def paused():
     while pause:
@@ -195,6 +222,7 @@ def paused():
         botton_im(exitp_light, exitp, 498, 384, 150, 60, "quit", True)
         pygame.display.update()
     return
+
 
 
 def input_name(score):
@@ -264,36 +292,45 @@ def input_name(score):
 
 
 def high_score():
-    file = open("high_score.txt", "r")
-    file = file.read()
-    score_list = []
-    for i in file.split(";"):
-        score_list += [i.split()]
-    while True:
-         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    game_intro()
-         GameDisplay.fill(black)
-         message_dis(score_list[0][1], 70, (500, 155), white)
-         message_dis(score_list[0][0], 70, (150, 155), white)
-         message_dis(score_list[0][2], 70, (920, 155), white)
-         message_dis(score_list[1][1], 70, (500, 255), white)
-         message_dis(score_list[1][0], 70, (150, 255), white)
-         message_dis(score_list[1][2], 70, (920, 255), white)
-         message_dis(score_list[2][1], 70, (500, 355), white)
-         message_dis(score_list[2][0], 70, (150, 355), white)
-         message_dis(score_list[2][2], 70, (920, 355), white)
-         message_dis(score_list[3][1], 70, (500, 455), white)
-         message_dis(score_list[3][0], 70, (150, 455), white)
-         message_dis(score_list[3][2], 70, (920, 455), white)
-         message_dis(score_list[4][1], 70, (500, 555), white)
-         message_dis(score_list[4][0], 70, (150, 555), white)
-         message_dis(score_list[4][2], 70, (920, 555), white)
-         pygame.display.update()
+    pass
+    # file = open("high_score.txt", "r")
+    # file = file.read()
+    # score_list = []
+    # show = GameDisplay.fill(white)
+    # t = 40
+    # for i in file.split(";"):
+    #     score_list += [i.split()]
+    # while True:
+    #      for event in pygame.event.get():
+    #         if event.type == pygame.QUIT:
+    #             pygame.quit()
+    #             quit()
+    #         if event.type == pygame.KEYDOWN:
+    #             if event.key == pygame.K_ESCAPE:
+    #                 game_intro()
+    #      if t < 255:
+    #         t += 10
+    #         show.set_alpha(t)
+    #         GameDisplay.blit(show,(0,0))
+    #         pygame.time.delay(100)
+    #      GameDisplay.fill(black)
+    #      back()
+    #      message_dis(score_list[0][1], 70, (500, 155), white)
+    #      message_dis(score_list[0][0], 70, (150, 155), white)
+    #      message_dis(score_list[0][2], 70, (920, 155), white)
+    #      message_dis(score_list[1][1], 70, (500, 255), white)
+    #      message_dis(score_list[1][0], 70, (150, 255), white)
+    #      message_dis(score_list[1][2], 70, (920, 255), white)
+    #      message_dis(score_list[2][1], 70, (500, 355), white)
+    #      message_dis(score_list[2][0], 70, (150, 355), white)
+    #      message_dis(score_list[2][2], 70, (920, 355), white)
+    #      message_dis(score_list[3][1], 70, (500, 455), white)
+    #      message_dis(score_list[3][0], 70, (150, 455), white)
+    #      message_dis(score_list[3][2], 70, (920, 455), white)
+    #      message_dis(score_list[4][1], 70, (500, 555), white)
+    #      message_dis(score_list[4][0], 70, (150, 555), white)
+    #      message_dis(score_list[4][2], 70, (920, 555), white)
+    #      pygame.display.update()
 
 
 def write(score):
@@ -365,7 +402,8 @@ def meteor(x, y, n):
     return  n
 
 def credit_():
-    show = pygame.image.load("Pics/BG_main/credit.jpg")  # title ba
+    t = 40
+    show = pygame.image.load("Pics/BG_intro/credit.jpg")  # title ba
     while True:
         click = pygame.mouse.get_pressed()
         for event in pygame.event.get():
@@ -375,9 +413,43 @@ def credit_():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     game_intro()
+        if t < 255:
+            t += 15
+            show.set_alpha(t)
+            GameDisplay.blit(show,(0,0))
+            pygame.time.delay(100)
         GameDisplay.blit(show, (0,0))
+        back()
         pygame.display.update()
         clock.tick(30)
+
+
+def how_to_play():
+    t = 40
+    show = pygame.image.load("Pics/BG_intro/howtoplay.jpg").convert()  # title ba
+    while True:
+        click = pygame.mouse.get_pressed()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_intro()
+        if t < 255:
+            t += 15
+            show.set_alpha(t)
+            GameDisplay.blit(show,(0,0))
+            pygame.time.delay(100)
+        GameDisplay.blit(show, (0,0))
+        back()
+        pygame.display.update()
+        clock.tick(30)
+
+
+
+def back():
+     botton_im(back2, back1, 990, 25, 100, 80, "back", True)
 #=========Mini Game================================
 
 def mini_game_mode():
@@ -392,7 +464,7 @@ def mini_game_mode():
     perfect = pygame.mixer.Sound('sounds/ding.wav')
     perfect.set_volume(.5)
     bad = pygame.mixer.Sound('sounds/wrong.wav')  # too long, make it short than this
-    bad.set_volume(.5)
+    bad.set_volume(.3)
     alarm = pygame.mixer.Sound('sounds/Alarm Siren.wav') # Audio Productions on youtube
     alarm.set_volume(.5)
     explode = pygame.mixer.Sound('sounds/Explosion Sound effect.wav')
@@ -413,7 +485,7 @@ def mini_game_mode():
     speedmax = 3
     speedmin = 1
     speed1, speed2, speed3, speed4, speed5 = random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax), random.randrange(speedmin,speedmax)
-    n1, n2, n3, n4, n5, m, s, l, k = 0, 0, 0, 0, 0, 0, 0, 0, 1
+    n1, n2, n3, n4, n5, m, s, l, k, i = 0, 0, 0, 0, 0, 0, 0, 0, 1, 0
     word1, word2, word3, word4, word5 = "", "", "", "", ""
     word_check = ""
     show_input = ""
@@ -434,7 +506,21 @@ def mini_game_mode():
             GameDisplay.blit(keyboard4, (0, 0))
             if m >= 4:
                 m = 0
-        # botton("            ", 125, 600, 980, 130, 30, red, red)
+        if y1 > 490 or y2 > 460 or y3 > 440 or y4 > 460 or y5 > 490:
+            alarm_check = True
+            if s == 0:
+                GameDisplay.blit(siren_light, (235,455))
+                GameDisplay.blit(siren_light, (760, 455))
+                s = 1
+            elif s == 1:
+                GameDisplay.blit(siren, (235, 455)) 
+                GameDisplay.blit(siren, (760,455))   
+                s = 0  
+        else:
+            GameDisplay.blit(siren, (235, 455))
+            GameDisplay.blit(siren, (760, 455))   
+            alarm_check = False
+            a = True
         GameDisplay.blit(heart, (15, 30))
         message_dis("X "+str(life), 20, (105, 50), white)
         message_dis(str(score), 40, (1005, 55), white)
@@ -456,7 +542,7 @@ def mini_game_mode():
                     else:
                         word1 += "." + str(keycap[index])
             n1 = meteor(x1-50, y1, n1)
-            message_dis(show_word1, 35, (x1, y1), white, "Billboard.ttf")
+            message_dis(show_word1, 30, (x1, y1), white, "Billboard.ttf")
         if word2 == "":
             i = 0
             show_word2 = list_word.pop(0)
@@ -498,10 +584,10 @@ def mini_game_mode():
                     else:
                         word5 += "." + str(keycap[index])
             n5 = meteor(x5-50, y5, n5)
-            message_dis(show_word5, 35, (x5, y5), white, "Billboard.ttf")
-        message_dis(show_word2, 35, (x2, y2), white, "Billboard.ttf")
-        message_dis(show_word3, 35, (x3, y3), white, "Billboard.ttf")
-        message_dis(show_word4, 35, (x4, y4), white, "Billboard.ttf")
+            message_dis(show_word5, 30, (x5, y5), white, "theboldfont.ttf")
+        message_dis(show_word2, 30, (x2, y2), white,  "theboldfont.ttf")
+        message_dis(show_word3, 30, (x3, y3), white, "theboldfont.ttf") 
+        message_dis(show_word4, 30, (x4, y4), white,  "theboldfont.ttf")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -589,21 +675,7 @@ def mini_game_mode():
             for z in output:
                 z = int(z) - 97
                 show_input += set_AtoZ[z]
-        if y1 > 490 or y2 > 460 or y3 > 440 or y4 > 460 or y5 > 490:
-            alarm_check = True
-            if s == 0:
-                GameDisplay.blit(siren_light, (235,455))
-                GameDisplay.blit(siren_light, (760, 455))
-                s = 1
-            elif s == 1:
-                GameDisplay.blit(siren, (235, 455)) 
-                GameDisplay.blit(siren, (760,455))   
-                s = 0  
-        else:
-            GameDisplay.blit(siren, (235, 455))
-            GameDisplay.blit(siren, (760, 455))   
-            alarm_check = False
-            a = True
+
         if alarm_check and a:
             alarm.play()
             a = False
@@ -660,6 +732,10 @@ def mini_game_mode():
         if life <1:
             explode.play()
             pygame.mixer.fadeout(1000)
+            gameover = pygame.mixer.Sound('sounds/gameover_sound.wav')
+            time.sleep(1.2)
+            gameover.set_volume(5)
+            gameover.play()
             check = 1
             while True:
                 for event in pygame.event.get():
@@ -672,17 +748,18 @@ def mini_game_mode():
                          if event.key == pygame.K_SPACE:    
                             mini_game_mode()
                 GameDisplay.fill(black)
+                back()
                 output = "GAME OVER"
-                message_dis(output, 60, (540, 150), red)
-                message_dis("Your Score", 60, (540, 300), red)
-                message_dis(str(score), 60, (540, 460), red)
-                message_dis("Press 'SPACE' To Restart", 30, (540, 670), red)
+                message_dis(output, 80, (540, 150), red, "Scary Halloween Font.ttf")
+                message_dis("Your Score", 80, (540, 300), red, "Scary Halloween Font.ttf")
+                message_dis(str(score), 80, (540, 460), red, "Scary Halloween Font.ttf")
+                message_dis("Press 'SPACE' To Restart", 30, (540, 670), red, "Scary Halloween Font.ttf")
                 pygame.display.update()
                 if check ==1 :
                     time.sleep(2)
                     write(score)
                     check = 2
-        message_dis(show_input, 90, (540, 535), yellow, "Billboard.ttf")
+        message_dis(show_input, 70, (540, 535), yellow,  "theboldfont.ttf")
         show_input = ""
         if score >= 30:
             y1 += speed1*0.5
@@ -698,6 +775,7 @@ def mini_game_mode():
 
 def game_intro():
     global bgsound, bgsound_intro, first
+    story_list = False
     if not bgsound and first:
         story_list = []
         for i in range(1, 5):
@@ -710,43 +788,60 @@ def game_intro():
             if i == 4:
                 j = 2
             for x in range(1, j+1):
-                story_list += [pygame.image.load("Pics/BG_intro/Story/"+str(i)+"/"+str(i)+"-"+str(x)+".png")]
-        story = story_list.pop(0)
+                story_list += [pygame.image.load("Pics/BG_intro/Story/"+str(i)+"/"+str(i)+"-"+str(x)+".png").convert()]
         first = False
     else:
         story = False
-    bg = pygame.image.load("Pics/BG_intro/mainmenu-1.jpg")
     if not bgsound_intro:
         bgsound_intro = pygame.mixer.Sound('sounds/intro.wav')
         bgsound_intro.set_volume(.2)
         bgsound_intro.play(loops=-1)
-    pygame.display.set_caption("METEOTYPE")  # title ba
+    first_scene = True
+    break_loop = True
+    last = False
+    if story_list:
+        while break_loop:
+            t = 40
+            if not bgsound:
+                try:
+                    if first_scene:
+                        story = story_list.pop(0)
+                        first_scene = False
+                    else:
+                        story = story_list.pop(0)
+                except:
+                    last = True
+            while t < 255:
+                t += 17
+                story.set_alpha(t)
+                GameDisplay.blit(story, (0,0))
+                pygame.time.delay(100)
+                pygame.display.update()
+            GameDisplay.blit(story, (0,0))
+            if last:
+                break_loop = False
+            pygame.display.update()
+    bg = pygame.image.load("Pics/BG_intro/mainmenu-1.jpg").convert()
+    i = 40
     while True:
-        click = pygame.mouse.get_pressed()
+        if i < 100:
+            i += 4
+            pygame.time.delay(100)
+            bg.set_alpha(i)
         for event in pygame.event.get():
             if bgsound:
                 pygame.mixer.fadeout(1500)
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if not bgsound:
-                if event.type == pygame.KEYDOWN :
-                    try:
-                        story = story_list.pop(0)
-                    except:
-                        story = False
-
-        if story:
-            GameDisplay.blit(story, (0,0))
-            message_dis("PRESS any key to continue", 20, (540, 650), red)
-        else:
-            GameDisplay.blit(bg,(0,0))
-            botton_im(start_light, start, 840, 245, 300, 250, "mini_game")
-            botton_im(howto_light, howto, 830, 490, 300, 300, "howtoplay")
-            botton_im(highscore_light, highscore, 120, 245, 200, 200, "high_score")
-            botton_im(credit_light, credit, 105, 445, 200, 200, "credit")
-            botton_im(exit_light, exit, 500, 640, 200, 200, "quit")
+        GameDisplay.blit(bg,(0,0))
+        botton_im(start_light, start, 840, 245, 300, 250, "mini_game")
+        botton_im(howto_light, howto, 830, 490, 300, 300, "howtoplay")
+        botton_im(highscore_light, highscore, 120, 245, 200, 200, "high_score")
+        botton_im(credit_light, credit, 105, 445, 200, 200, "credit")
+        botton_im(exit_light, exit, 500, 640, 200, 200, "quit")
         pygame.display.update()
         clock.tick(30)
 pygame.init()
+pygame.display.set_caption("METEORTYPE")  # title ba
 game_intro()
