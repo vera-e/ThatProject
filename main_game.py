@@ -38,10 +38,13 @@ exitp = pygame.image.load("Pics/Icon/exit_button.png")
 exitp_light = pygame.image.load("Pics/Icon/exit_button_lighter.png")
 heart = pygame.image.load("Pics/BG_main/Hearts_01_128x128_025.png")
 damscreen = pygame.image.load("Pics/BG_main/red.png")
+bg_highscore = pygame.image.load("Pics/BG_intro/bg_highscore.png")
 siren = pygame.image.load("Pics/BG_main/siren.png")
 siren_light = pygame.image.load("Pics/BG_main/sirenlight.png")
 back1 = pygame.image.load("Pics/Icon/back1.png")
 back2 = pygame.image.load("Pics/Icon/back2.png")
+restart1 = pygame.image.load("Pics/Icon/restart.png")
+restart2 = pygame.image.load("Pics/Icon/restart2.png")
 #========================
 bgsound = False
 bgsound_intro = False
@@ -56,16 +59,6 @@ yellow = (200, 200, 0)
 purple = (150, 0, 200)
 
 #============helper function==========================
-def fade():
-    newSurf = pygame.Surface((1080, 720))
-    x = 225
-    while x > 0:
-        # GameDisplay.fill()  #or whatever your background color is
-        newSurf.set_alpha(x)
-        GameDisplay.blit(newSurf, (0,0))
-        x -= 1
-        pygame.display.flip()
-        # pygame.time.delay()
 
 
 def prepare():
@@ -193,7 +186,7 @@ def message_dis(text, size, position, color=None, fontfam=None):
     if not color:
         color = black
     if not fontfam:
-        fontfam = "Baby Blocks.ttf"
+        fontfam = "fonts/Baby Blocks.ttf"
     # parameter is family , font size
     sizetext = pygame.font.Font(fontfam, size)
 # www.WebpagePublicity.com/free-fonts/b/Baby Blocks.ttf
@@ -280,57 +273,56 @@ def input_name(score):
                         show_input += set_num[z]
             except:
                 continue
-        message_dis("NEW HIGH SCORE", 70, (540, 150),white, "Billboard.ttf")
-        message_dis(str(score), 70, (530, 250),white, "Billboard.ttf")
-        message_dis("SUBMIT YOUR NAME", 70, (540, 350),white, "Billboard.ttf")
-        message_dis(show_input, 50, (540, 475), yellow, "Billboard.ttf")
+        message_dis("NEW HIGH SCORE", 70, (540, 150),white, "fonts/Billboard.ttf")
+        message_dis(str(score), 70, (530, 250),white, "fonts/Billboard.ttf")
+        message_dis("SUBMIT YOUR NAME", 70, (540, 350),white, "fonts/Billboard.ttf")
+        message_dis(show_input, 50, (540, 475), yellow, "fonts/Billboard.ttf")
         if show_input != "":
-            message_dis("PRESS ENTER TO SUBMIT", 30, (540, 530),white, "Billboard.ttf")
+            message_dis("PRESS ENTER TO SUBMIT", 30, (540, 530),white, "fonts/Billboard.ttf")
             name = show_input
         pygame.display.update()
         clock.tick(30)
 
 
 def high_score():
-    pass
-    # file = open("high_score.txt", "r")
-    # file = file.read()
-    # score_list = []
-    # show = GameDisplay.fill(white)
-    # t = 40
-    # for i in file.split(";"):
-    #     score_list += [i.split()]
-    # while True:
-    #      for event in pygame.event.get():
-    #         if event.type == pygame.QUIT:
-    #             pygame.quit()
-    #             quit()
-    #         if event.type == pygame.KEYDOWN:
-    #             if event.key == pygame.K_ESCAPE:
-    #                 game_intro()
-    #      if t < 255:
-    #         t += 10
-    #         show.set_alpha(t)
-    #         GameDisplay.blit(show,(0,0))
-    #         pygame.time.delay(100)
-    #      GameDisplay.fill(black)
-    #      back()
-    #      message_dis(score_list[0][1], 70, (500, 155), white)
-    #      message_dis(score_list[0][0], 70, (150, 155), white)
-    #      message_dis(score_list[0][2], 70, (920, 155), white)
-    #      message_dis(score_list[1][1], 70, (500, 255), white)
-    #      message_dis(score_list[1][0], 70, (150, 255), white)
-    #      message_dis(score_list[1][2], 70, (920, 255), white)
-    #      message_dis(score_list[2][1], 70, (500, 355), white)
-    #      message_dis(score_list[2][0], 70, (150, 355), white)
-    #      message_dis(score_list[2][2], 70, (920, 355), white)
-    #      message_dis(score_list[3][1], 70, (500, 455), white)
-    #      message_dis(score_list[3][0], 70, (150, 455), white)
-    #      message_dis(score_list[3][2], 70, (920, 455), white)
-    #      message_dis(score_list[4][1], 70, (500, 555), white)
-    #      message_dis(score_list[4][0], 70, (150, 555), white)
-    #      message_dis(score_list[4][2], 70, (920, 555), white)
-    #      pygame.display.update()
+    file = open("high_score.txt", "r")
+    file = file.read()
+    score_list = []
+    show = bg_highscore
+    t = 40
+    for i in file.split(";"):
+        score_list += [i.split()]
+    while True:
+         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_intro()
+         if t < 255:
+            t += 10
+            show.set_alpha(t)
+            GameDisplay.blit(show,(0,0))
+            pygame.time.delay(100)
+         GameDisplay.blit(show, (0,0))
+         back()
+         message_dis(score_list[0][1], 60, (500, 155), white)
+         message_dis(score_list[0][0], 60, (150, 155), white)
+         message_dis(score_list[0][2], 60, (920, 155), white)
+         message_dis(score_list[1][1], 60, (500, 245), white)
+         message_dis(score_list[1][0], 60, (150, 245), white)
+         message_dis(score_list[1][2], 60, (920, 245), white)
+         message_dis(score_list[2][1], 60, (500, 345), white)
+         message_dis(score_list[2][0], 60, (150, 345), white)
+         message_dis(score_list[2][2], 60, (920, 345), white)
+         message_dis(score_list[3][1], 60, (500, 445), white)
+         message_dis(score_list[3][0], 60, (150, 445), white)
+         message_dis(score_list[3][2], 60, (920, 445), white)
+         message_dis(score_list[4][1], 60, (500, 545), white)
+         message_dis(score_list[4][0], 60, (150, 545), white)
+         message_dis(score_list[4][2], 60, (920, 545), white)
+         pygame.display.update()
 
 
 def write(score):
@@ -449,7 +441,7 @@ def how_to_play():
 
 
 def back():
-     botton_im(back2, back1, 990, 25, 100, 80, "back", True)
+     botton_im(back1, back2, 990, 650, 100, 80, "back", True)
 #=========Mini Game================================
 
 def mini_game_mode():
@@ -542,7 +534,7 @@ def mini_game_mode():
                     else:
                         word1 += "." + str(keycap[index])
             n1 = meteor(x1-50, y1, n1)
-            message_dis(show_word1, 30, (x1, y1), white, "Billboard.ttf")
+            message_dis(show_word1, 30, (x1, y1), white, "fonts//theboldfont.ttf")
         if word2 == "":
             i = 0
             show_word2 = list_word.pop(0)
@@ -584,10 +576,10 @@ def mini_game_mode():
                     else:
                         word5 += "." + str(keycap[index])
             n5 = meteor(x5-50, y5, n5)
-            message_dis(show_word5, 30, (x5, y5), white, "theboldfont.ttf")
-        message_dis(show_word2, 30, (x2, y2), white,  "theboldfont.ttf")
-        message_dis(show_word3, 30, (x3, y3), white, "theboldfont.ttf") 
-        message_dis(show_word4, 30, (x4, y4), white,  "theboldfont.ttf")
+            message_dis(show_word5, 30, (x5, y5), white, "fonts/theboldfont.ttf")
+        message_dis(show_word2, 30, (x2, y2), white,  "fonts/theboldfont.ttf")
+        message_dis(show_word3, 30, (x3, y3), white, "fonts/theboldfont.ttf") 
+        message_dis(show_word4, 30, (x4, y4), white,  "fonts/theboldfont.ttf")
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -750,16 +742,16 @@ def mini_game_mode():
                 GameDisplay.fill(black)
                 back()
                 output = "GAME OVER"
-                message_dis(output, 80, (540, 150), red, "Scary Halloween Font.ttf")
-                message_dis("Your Score", 80, (540, 300), red, "Scary Halloween Font.ttf")
-                message_dis(str(score), 80, (540, 460), red, "Scary Halloween Font.ttf")
-                message_dis("Press 'SPACE' To Restart", 30, (540, 670), red, "Scary Halloween Font.ttf")
+                botton_im(restart2, restart1, 990, 560, 100, 80, "mini_game", True)
+                message_dis(output, 80, (540, 150), red, "fonts/Scary Halloween Font.ttf")
+                message_dis("Your Score", 80, (540, 300), red, "fonts/Scary Halloween Font.ttf")
+                message_dis(str(score), 80, (540, 460), red, "fonts/Scary Halloween Font.ttf")
                 pygame.display.update()
                 if check ==1 :
                     time.sleep(2)
                     write(score)
                     check = 2
-        message_dis(show_input, 70, (540, 535), yellow,  "theboldfont.ttf")
+        message_dis(show_input, 75, (540, 540), green,  "fonts/theboldfont.ttf")
         show_input = ""
         if score >= 30:
             y1 += speed1*0.5
