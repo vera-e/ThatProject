@@ -494,6 +494,8 @@ def mini_game_mode():
     keycap = [pygame.K_a, pygame.K_b, pygame.K_c, pygame.K_d, pygame.K_e, pygame.K_f, pygame.K_g, pygame.K_h, pygame.K_i, pygame.K_j, pygame.K_k, pygame.K_l, pygame.K_m,
               pygame.K_n, pygame.K_o, pygame.K_p, pygame.K_q, pygame.K_r, pygame.K_s, pygame.K_t, pygame.K_u, pygame.K_v, pygame.K_w, pygame.K_x, pygame.K_y, pygame.K_z, 13 , pygame.K_BACKSPACE, pygame.K_ESCAPE, pygame.K_SPACE]
     while True:
+        if list_word  == []:
+            list_word = word_list()
         if m <= 1:
             GameDisplay.blit(keyboard1, (0, 0))
         elif m <= 2:
@@ -757,7 +759,7 @@ def mini_game_mode():
                     time.sleep(2)
                     write(score)
                     check = 2
-        message_dis(show_input, 75, (540, 540), green,  "fonts/theboldfont.ttf")
+        message_dis(show_input, 75, (540, 540), yellow,  "fonts/theboldfont.ttf")
         botton_im(pause1, pause2, 1020, 630, 100, 80, "pause", True)
         show_input = ""
         if score >= 30:
@@ -838,7 +840,7 @@ def game_intro():
         botton_im(howto_light, howto, 830, 490, 300, 300, "howtoplay")
         botton_im(highscore_light, highscore, 120, 245, 200, 200, "high_score")
         botton_im(credit_light, credit, 105, 445, 200, 200, "credit")
-        botton_im(exit_light, exit, 500, 640, 200, 200, "quit")
+        botton_im(exit_light, exit, 500, 590, 100, 100, "quit")
         pygame.display.update()
         clock.tick(30)
 pygame.init()
