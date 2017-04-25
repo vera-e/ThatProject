@@ -45,6 +45,8 @@ back1 = pygame.image.load("Pics/Icon/back1.png")
 back2 = pygame.image.load("Pics/Icon/back2.png")
 restart1 = pygame.image.load("Pics/Icon/restart.png")
 restart2 = pygame.image.load("Pics/Icon/restart2.png")
+pause1 = pygame.image.load("Pics/Icon/pause.png")
+pause2 = pygame.image.load("Pics/Icon/pause2.png")
 #========================
 bgsound = False
 bgsound_intro = False
@@ -131,6 +133,7 @@ def prepare():
 
 
 def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
+    global pause
     click = pygame.mouse.get_pressed()
     mouse = pygame.mouse.get_pos()
     click_sound = pygame.mixer.Sound('sounds/click_sound.wav')
@@ -153,6 +156,9 @@ def botton_im(icon, icon_light, x, y, w, h, order=None, p=None):
             if order == "quit":
                 pygame.quit()
                 quit()
+            if order== "pause":
+                pause = True
+                paused()
             if order == "howtoplay":
                 how_to_play()
             if order == "back":
@@ -752,12 +758,13 @@ def mini_game_mode():
                     write(score)
                     check = 2
         message_dis(show_input, 75, (540, 540), green,  "fonts/theboldfont.ttf")
+        botton_im(pause1, pause2, 1020, 630, 100, 80, "pause", True)
         show_input = ""
         if score >= 30:
-            y1 += speed1*0.5
-        y2 += speed2*0.5
-        y3 += speed3*0.5
-        y4 += speed4*0.5
+            y1 += speed1*0.35
+        y2 += speed2*0.35
+        y3 += speed3*0.35
+        y4 += speed4*0.35
         if score >= 30:
             y5 += speed5*0.5
         pygame.display.update()
