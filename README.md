@@ -3,6 +3,7 @@ Principles of Computing - 204113 Sec 001
 ## Installing
 * [Python 3.6](https://www.python.org/downloads/) - Download Here
 * [Pygame](http://www.pygame.org/download.shtml) - Download Here
+
 Run main_game.py through python
 ### Creators
 * 590510528 กฤตยาณี เขื่อนแก้ว 
